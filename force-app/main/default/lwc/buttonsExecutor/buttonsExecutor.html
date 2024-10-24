@@ -1,0 +1,36 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={showSpinner}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <div class="slds-grid">
+            <template for:each={panelButtons} for:item="button">
+                <template if:true={button.display}>
+                    <div key={button.key} class={button.classList}>
+                        <!--<lightning-button variant={button.variant} label={button.label} class={button.class}
+                        disabled={button.disabled} onclick={button.onclick} style="background-color: aqua;"></lightning-button>-->
+                        <template if:false={button.disabled}>
+                            <a class="link-button" style={bgcolorVal} onclick={button.onclick}>
+                                <div class="container">
+                                    <div style={colorWithFontSizeVal}>{button.label}</div>
+                                </div>
+                                <lightning-helptext content={button.tooltipText} class="slds-p-right_xx-small"></lightning-helptext>
+                            </a>
+                        </template>
+                        <template if:true={button.disabled}>
+                            <a class="link-button-disabled">
+                                <div class="container">
+                                    <div style={fontSizeDisabledVal}>{button.label}</div>
+                                </div>
+                                <lightning-helptext content={button.tooltipText} class="slds-p-right_xx-small"></lightning-helptext>
+                            </a>
+                        </template>
+                        <!--<template if:true={button.disabled}>
+                        <lightning-helptext content={button.tooltipText}></lightning-helptext>
+                    </template>-->
+                    </div>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

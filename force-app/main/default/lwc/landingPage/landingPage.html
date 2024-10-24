@@ -1,0 +1,52 @@
+<template>
+    <article class="slds-card" style={cardStyle}>
+        <!--header-->
+        <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body slds-truncate">
+                    <h2>
+                        <span class="slds-text-heading_large slds-text-title_bold">{title}</span>
+                    </h2>
+                </div>
+            </div>
+            <div class="slds-no-flex">
+                <slot name="actions">
+                </slot>
+            </div>
+        </header>
+        <!-- -->
+        <div class="slds-card__body">
+            <div class="slds-card noHyperlinkStyle slds-m-around_xx-large slds-grid slds-wrap" style={coverStyle}>
+                <template if:true={showlogo}>
+                    <div class={firsttileClass}>
+                        <a href={url} target="_Blank">
+                            <div class="slds-icon_container slds-m-around_x-small slds-item">
+                                <img src={imageResource} />
+                            </div>
+                        </a>
+                    </div>
+                </template>
+                <template for:each={listTilesrow} for:item="item">
+                    <template if:true={item.show}>
+                        <div key={item} class={item.class}>
+                            <a href={item.link}>
+                                <div class="slds-icon_container slds-m-around_x-small slds-item" style={item.tilestyle}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                                        class="slds-icon slds-size_1-of-1 slds-p-around_xx-small" style="height: 100%;">
+                                        <use xlink:href={item.iconlink}>
+                                        </use>
+                                    </svg>
+                                    <div class="slds-align_absolute-center">
+                                        <div class="slds-p-around_x-small slds-text-title_bold" style={item.textstyle}>
+                                            {item.text}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </article>
+</template>

@@ -1,0 +1,825 @@
+<template>
+  <div class="main-container">
+    <div class="slds-card slds-card_boundary slds-grid slds-var-p-around_small" if:false={instance.valid}>
+      <div if:false={hasData}>
+        <template for:each={instance.errorMessages} for:item="message">
+          <div key={message} class="slds-grid slds-align_absolute-center">
+            <lightning-icon icon-name="utility:error" variant="error" size="xx-small" class="slds-var-p-right_small">
+            </lightning-icon>
+            <div>
+              {message}
+            </div>
+          </div>
+        </template>
+      </div>
+      <lightning-button-icon icon-name="utility:refresh" onclick={searchBtnHandler} variant="border-filled"
+        class="slds-var-p-left_small">
+      </lightning-button-icon>
+    </div>
+    <div class="slds-card slds-card_boundary" if:true={instance.valid}>
+      <lightning-spinner variant="brand" size="large" if:true={instance.Loading}></lightning-spinner>
+      <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <lightning-icon icon-name={instance.iconName}></lightning-icon>
+              </div>
+              <div class="slds-media__body">
+                <h1>
+                  <div class="slds-line-height_reset">
+                    {instance.objectLabel}
+                  </div>
+                  <div class="slds-page-header__title slds-var-m-right_small slds-align-middle"
+                    title={instance.resultWrapper.templateMasterLabel}>
+                    {instance.resultWrapper.templateMasterLabel}
+                  </div>
+                </h1>
+              </div>
+            </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <div class="slds-grid">
+                  <!-- buttons -->
+                  <lightning-button title={Labels.LBL_New} label={Labels.LBL_New} onclick={newRecord}
+                    class="slds-var-p-left_xx-small" if:true={displayNewButton}></lightning-button>
+                  <lightning-button title={labelNewInlineButton} label={labelNewInlineButton} onclick={newInlineRecord}
+                    class="slds-var-p-left_xx-small" if:true={displayNewInlineButton}>
+                  </lightning-button>
+                  <lightning-button title={Labels.LBL_Cancel} label={Labels.LBL_Cancel} onclick={cancelChangesHandler}
+                    if:true={instance.hasChanges} class="slds-var-p-left_xx-small">
+                  </lightning-button>
+                  <lightning-button title={Labels.LBL_Save} label={Labels.LBL_Save} variant="brand"
+                    if:true={instance.hasChanges} onclick={saveChangesHandler} class="slds-var-p-left_xx-small">
+                  </lightning-button>
+                  <lightning-button-menu icon-name="utility:connected_apps" menu-alignment="right" nubbin
+                    class="slds-var-p-left_xx-small" if:true={hasMenu}>
+                    <template if:true={deleteAvailable}>
+                      <lightning-menu-item label={Labels.LBL_Delete} prefix-icon-name="utility:delete"
+                        onclick={deleteSelected} if:true={instance.hasSelected}></lightning-menu-item>
+                      <lightning-menu-item label={Labels.LBL_Delete} prefix-icon-name="utility:delete" disabled
+                        if:false={instance.hasSelected}></lightning-menu-item>
+                    </template>
+                    <template if:true={displayShowHideColumns}>
+                      <lightning-menu-item label={Labels.LBL_Show_Hide_Columns} prefix-icon-name="utility:freeze_column"
+                        onclick={showHideColumns}></lightning-menu-item>
+                    </template>
+                    <lightning-menu-item label={Labels.LBL_Export} prefix-icon-name="doctype:excel"
+                      if:true={allowExport} onclick={exportExcel}></lightning-menu-item>
+                    <!-- <lightning-menu-divider></lightning-menu-divider> -->
+                  </lightning-button-menu>
+                  <lightning-button-icon-stateful icon-name="utility:filterList" selected={isFilterOpen}
+                    variant="border-filled" onclick={toggleFilter} class="slds-var-p-left_xx-small"
+                    if:true={hasFilterSettingsFields}>
+                  </lightning-button-icon-stateful>
+                  <lightning-button-icon icon-name="utility:expand" variant="border-filled" onclick={openFullScreen}
+                    class="slds-var-p-left_xx-small">
+                  </lightning-button-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title slds-grid">
+                    <div class="slds-truncate slds-var-p-top_small">
+                      <div class="slds-col slds-align-bottom">
+                        <div class="slds-text-body_small">
+                          <span if:true={isBigObject}>
+                            {instance.resultWrapper.total} Records  
+                          </span>
+                          <span if:false={isBigObject} title={instance.selectedBadge}>
+                            {instance.selectedBadge}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+              <div class="slds-page-header__control">
+                <div if:false={isBigObject} class="slds-grid">
+                  <lightning-input variant="label-hidden" placeholder={Labels.LBL_Search}
+                    onchange={searchInputChangeHandler} onkeypress={submitSearchKeyPressHandler}
+                    onblur={submitSearchFocusOutHandler} type="search" class="slds-var-p-left_xx-small">
+                  </lightning-input>
+                  <lightning-button-icon icon-name="utility:refresh" onclick={searchBtnHandler} variant="border-filled"
+                    class="slds-var-p-left_xx-small">
+                  </lightning-button-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content slds-page-header__row slds-card slds-grid" id="content">
+        <div class="slds-size_1-of-1 slds-grid">
+          <div class="slds-col slds-grid slds-scrollable slds-wrap" if:true={hasData}>
+            <div class="slds-size_1-of-1 slds-grid">
+              <div class="slds-size_1-of-1 slds-scrollable tableContainer" style={tableStyle}
+                onscroll={loadMoreDataDelay}>
+                <table
+                  class="initial-table slds-table slds-table_bordered slds-no-cell-focus slds-no-row-hover data-container-table"
+                  id="initial-table" if:false={instance.tableLoading}>
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th if:false={isBigObject}
+                        class="slds-text-align_center sticky-header limited-cell slds-align-bottom" scope="col">
+                        <lightning-input type="checkbox" checked if:true={instance.isAllSelected} variant="label-hidden"
+                          onchange={toggleAllRecordSelect}>
+                        </lightning-input>
+                        <lightning-input type="checkbox" if:false={instance.isAllSelected} variant="label-hidden"
+                          onchange={toggleAllRecordSelect}>
+                        </lightning-input>
+                      </th>
+                      <th if:true={cloneAvailable} class="slds-text-align_center sticky-header limited-cell slds-align-bottom" scope="col">
+                      </th>
+                      <template for:each={selectedGridFields} for:item="field">
+                        <template if:false={field.isHidden}>
+                          <th key={field}
+                            class="slds-text-align_center sticky-header slds-border_left slds-align-bottom"
+                            style={field.widthStyle} scope="col" if:false={field.isPersonalised}>
+                            <div class="slds-grid slds-grid_align-spread">
+                              <div if:false={field.widthStyle}
+                                class="slds-truncate slds-var-p-horizontal_xx-small slds-align-bottom">
+                                {field.fieldLabel}</div>
+                              <div if:true={field.widthStyle} class="slds-var-p-horizontal_xx-small slds-align-bottom"
+                                style="white-space: pre-wrap; word-break: inherit; !important;">
+                                {field.fieldLabel}</div>
+                              <lightning-helptext content={field.helpText} if:true={field.hasHelpText}>
+                              </lightning-helptext>
+                              <div if:true={field.isSortable} class="slds-col_bump-left">
+                                <lightning-button-icon if:true={field.ascSortDirection} data-id={field.fieldName}
+                                  data-sort-direction={field.ascSortDirection} variant="bare"
+                                  icon-name="utility:arrowdown" onclick={changeSortDirection}></lightning-button-icon>
+                                <lightning-button-icon if:false={field.ascSortDirection} data-id={field.fieldName}
+                                  data-sort-direction={field.ascSortDirection} variant="bare"
+                                  icon-name="utility:arrowup" onclick={changeSortDirection}></lightning-button-icon>
+                              </div>
+                            </div>
+                          </th>
+                        </template>
+                      </template>
+                      <th if:false={isBigObject}
+                        class="slds-text-align_center sticky-header limited-cell slds-border_left slds-align-bottom"
+                        scope="col">
+                      </th>
+                      <th if:false={isBigObject}
+                        class="slds-text-align_center sticky-header slds-align-bottom limited-cell" scope="col">
+                      </th>
+                    </tr>
+                    <tr if:true={hasTotalFields} class="total-row slds-color__background_gray-4">
+                      <td if:false={isBigObject} class="slds-color__background_gray-4"></td>
+                      <td class="slds-color__background_gray-4"></td>
+                      <template for:each={selectedGridFields} for:item="field">
+                        <td key={field} class="slds-text-align_center limited-cell slds-color__background_gray-4"
+                          scope="col">
+                          {field.total}
+                        </td>
+                      </template>
+                      <td class="slds-color__background_gray-4"></td>
+                      <td class="slds-color__background_gray-4"></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template for:each={instance.resultWrapper.data} for:item="record">
+                      <tr data-row="parent" data-row-index={record.index} key={record.index}>
+                        <td if:false={isBigObject} class="slds-text-align_center limited-cell" scope="col"
+                          style="background-color: white;">
+                          <template if:true={record.Id}>
+                            <lightning-input type="checkbox" checked if:true={record.isSelected} variant="label-hidden"
+                              data-id={record.Id} onchange={toggleRecordSelect}></lightning-input>
+                            <lightning-input type="checkbox" if:false={record.isSelected} variant="label-hidden"
+                              data-id={record.Id} onchange={toggleRecordSelect}></lightning-input>
+                            <template if:true={record.hasError}>
+                              <lightning-icon icon-name="utility:error" size="xx-small" class="error-icon">
+                              </lightning-icon>
+                            </template>
+                          </template>
+                          <template if:false={record.Id}>
+                            <lightning-input type="checkbox" if:false={record.isSelected} variant="label-hidden"
+                              data-id={record.Id} onchange={toggleRecordSelect} disabled></lightning-input>
+                            <template if:true={record.hasError}>
+                              <lightning-icon icon-name="utility:error" size="xx-small" class="error-icon">
+                              </lightning-icon>
+                            </template>
+                          </template>
+                        </td>
+                        <td data-row-index={record.index} style="background-color: white;" if:true={cloneAvailable}>
+                          <template if:true={record.Id}>
+                            <lightning-button-icon data-row-index={record.index} onclick={cloneRecord}
+                              icon-name="utility:copy" data-id={record.Id} variant="bare">
+                            </lightning-button-icon>
+                          </template>
+                          <template if:false={record.Id}>
+                            <lightning-button-icon onclick={cloneRecord} icon-name="utility:copy" variant="bare"
+                              disabled>
+                            </lightning-button-icon>
+                          </template>
+                        </td>
+                        <template for:each={record.fields} for:item="field">
+                          <template if:false={field.isHidden}>
+                            <td data-row-index={record.index} key={field.key} scope="col" style={field.style}
+                              if:false={field.isPersonalised} class={field.class}>
+                              <div if:true={field.isInputField}>
+                                <template if:true={field.isText}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input value={field.value} variant="label-hidden"
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}
+                                      disabled>
+                                    </lightning-input>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input value={field.value} variant="label-hidden"
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}>
+                                    </lightning-input>
+                                  </template>
+                                </template>
+                                <template if:true={field.isUrl}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input value={field.value} variant="label-hidden"
+                                      if:false={field.hasFileInput} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input>
+                                    <div if:true={field.hasFileInput} class='slds-grid'>
+                                      <div class="slds-truncate">
+                                        <a href={field.value} target="_blank">{field.value}</a>
+                                      </div>
+                                      <div class='slds-col_bump-left'>
+                                        <lightning-button-icon data-row-index={record.index} icon-name="utility:delete"
+                                          size="small" alternative-text={Labels.LBL_Delete} class="slds-m-left_xx-small"
+                                          data-id={record.Id} data-field-name={field.key} data-field-value={field.value}
+                                          onclick={handleDeleteInputFilePopup} if:true={field.value} disabled>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon data-row-index={record.index} icon-name="utility:upload"
+                                          size="small" alternative-text={Labels.LBL_Upload_File}
+                                          class="slds-m-left_xx-small" data-id={record.Id} disabled
+                                          data-field-name={field.key} data-field-value={field.value}
+                                          onclick={handleToggleInputFilePopup}>
+                                        </lightning-button-icon>
+                                      </div>
+                                    </div>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input value={field.value} variant="label-hidden"
+                                      if:false={field.hasFileInput} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input>
+                                    <div if:true={field.hasFileInput} class='slds-grid'>
+                                      <div class="slds-truncate">
+                                        <a href={field.value} target="_blank">{field.value}</a>
+                                      </div>
+                                      <div class='slds-col_bump-left'>
+                                        <lightning-button-icon data-row-index={record.index} icon-name="utility:delete"
+                                          size="small" alternative-text={Labels.LBL_Delete} class="slds-m-left_xx-small"
+                                          data-id={record.Id} data-field-name={field.key} data-field-value={field.value}
+                                          onclick={handleDeleteInputFilePopup} if:true={field.value}>
+                                        </lightning-button-icon>
+                                        <lightning-button-icon data-row-index={record.index} icon-name="utility:upload"
+                                          size="small" alternative-text={Labels.LBL_Upload_File}
+                                          class="slds-m-left_xx-small" data-id={record.Id} data-field-name={field.key}
+                                          data-field-value={field.value} onclick={handleToggleInputFilePopup}>
+                                        </lightning-button-icon>
+                                      </div>
+                                    </div>
+                                  </template>
+                                </template>
+                                <template if:true={field.isBoolean}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input type="checkbox" checked variant="label-hidden"
+                                      if:true={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input>
+                                    <lightning-input type="checkbox" variant="label-hidden" if:false={field.value}
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}
+                                      disabled>
+                                    </lightning-input>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input type="checkbox" checked variant="label-hidden"
+                                      if:true={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-input>
+                                    <lightning-input type="checkbox" variant="label-hidden" if:false={field.value}
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}>
+                                    </lightning-input>
+                                  </template>
+                                </template>
+                                <template if:true={field.isTextArea}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-rich-text type="number" step={field.increment} value={field.value}
+                                      variant="label-hidden" if:true={field.isRichText} class="slds-text-align_right"
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}
+                                      disabled>
+                                    </lightning-input-rich-text>
+                                    <lightning-textarea value={field.value} variant="label-hidden"
+                                      if:false={field.isRichText} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-textarea>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-rich-text type="number" step={field.increment} value={field.value}
+                                      variant="label-hidden" if:true={field.isRichText} class="slds-text-align_right"
+                                      data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}>
+                                    </lightning-input-rich-text>
+                                    <lightning-textarea value={field.value} variant="label-hidden"
+                                      if:false={field.isRichText} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-textarea>
+                                  </template>
+                                </template>
+                                <lightning-record-edit-form object-api-name={instance.objectName} if:true={field.isDate}
+                                  record-id={record.Id}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input-field>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-input-field>
+                                  </template>
+                                </lightning-record-edit-form>
+                                <lightning-record-edit-form object-api-name={instance.objectName}
+                                  if:true={field.isDateTime} record-id={record.Id}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input-field>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-input-field>
+                                  </template>
+                                </lightning-record-edit-form>
+                                <!-- <lightning-input type="date" value={field.value} variant="label-hidden"
+                                  if:true={field.isDate} data-field-name={field.key} data-id={record.Id}
+                                  onchange={genericChangeHandler}>
+                                </lightning-input>
+                                <lightning-input type="datetime" value={field.value} variant="label-hidden"
+                                  if:true={field.isDateTime} data-field-name={field.key} data-id={record.Id}
+                                  onchange={genericChangeHandler}>
+                                </lightning-input> -->
+                                <template if:true={field.isOnlyNumber}>
+                                  <lightning-input type="number" step={field.increment} value={field.value}
+                                    variant="label-hidden" if:true={field.isDisabled} class="slds-text-align_right"
+                                    data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}
+                                    disabled>
+                                  </lightning-input>
+                                  <lightning-input type="number" step={field.increment} value={field.value}
+                                    variant="label-hidden" if:false={field.isDisabled} class="slds-text-align_right"
+                                    data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}>
+                                  </lightning-input>
+                                </template>
+                                <!-- Picklist -->
+                                <lightning-record-edit-form if:true={field.isPicklist}
+                                  object-api-name={instance.objectName} record-id={record.Id}
+                                  onmouseenter={handleEnterHasDropDownElementSticky}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input-field>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-input-field>
+                                  </template>
+                                  <lightning-input-field if:true={field.controllerName} class="slds-hide"
+                                    variant="label-hidden" field-name={field.controllerName}
+                                    value={field.controllerValue}>
+                                  </lightning-input-field>
+                                </lightning-record-edit-form>
+                                <!-- MultiPicklist -->
+                                <lightning-record-edit-form if:true={field.isMultiPicklist}
+                                  object-api-name={instance.objectName} record-id={record.Id}>
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} disabled>
+                                    </lightning-input-field>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler}>
+                                    </lightning-input-field>
+                                  </template>
+                                </lightning-record-edit-form>
+
+                                <!-- <lightning-combobox value={field.value} options={field.pickListValues}
+                                variant="label-hidden" if:true={field.isPicklist} data-field-name={field.key}
+                                data-id={record.Id} onchange={genericChangeHandler}>
+                              </lightning-combobox> -->
+                                <!-- <lightning-dual-listbox options={field.pickListValues} value={field.value}
+                                variant="label-hidden" if:true={field.isMultiPicklist} data-field-name={field.key}
+                                data-id={record.Id} onchange={genericChangeHandler}>
+                              </lightning-dual-listbox> -->
+                                <template if:true={field.isCurrency}>
+                                  <lightning-input type="number" step={field.increment} formatter="currency"
+                                    value={field.value} variant="label-hidden" if:true={field.isDisabled}
+                                    class="slds-text-align_right" data-field-name={field.key} data-id={record.Id}
+                                    onchange={genericChangeHandler} disabled>
+                                  </lightning-input>
+                                  <lightning-input type="number" step={field.increment} formatter="currency"
+                                    value={field.value} variant="label-hidden" if:false={field.isDisabled}
+                                    class="slds-text-align_right" data-field-name={field.key} data-id={record.Id}
+                                    onchange={genericChangeHandler}>
+                                  </lightning-input>
+                                </template>
+                                <template if:true={field.isPercent}>
+                                  <lightning-input type="number" variant="label-hidden" value={field.value}
+                                    if:true={field.isDisabled} formatter="percent-fixed" step={field.increment}
+                                    data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}
+                                    disabled>
+                                  </lightning-input>
+                                  <lightning-input type="number" variant="label-hidden" value={field.value}
+                                    if:false={field.isDisabled} formatter="percent-fixed" step={field.increment}
+                                    data-field-name={field.key} data-id={record.Id} onchange={genericChangeHandler}>
+                                  </lightning-input>
+                                </template>
+                                <!-- <lightning-input type="search" value={field.value} variant="label-hidden"
+                                class="slds-text-align_right" if:true={field.isReference} data-field-name={field.key}
+                                data-id={record.Id} onchange={genericChangeHandler}>
+                              </lightning-input> -->
+                                <!-- <lightning-input type="search" value={field.value} variant="label-hidden"
+                                class="slds-text-align_right" if:true={field.isReference} data-field-name={field.key}
+                                data-id={record.Id}>
+                              </lightning-input> -->
+                                <lightning-record-edit-form if:true={field.isReference}
+                                  onmouseenter={handleEnterHasDropDownElementSticky}
+                                  object-api-name={instance.objectName} record-id={record.Id} class="lookup"
+                                  style="z-index: 10 !important;">
+                                  <!-- <lightning-messages></lightning-messages> -->
+                                  <template if:true={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} style="z-index: 10 !important;" disabled>
+                                    </lightning-input-field>
+                                  </template>
+                                  <template if:false={field.isDisabled}>
+                                    <lightning-input-field variant="label-hidden" field-name={field.key}
+                                      value={field.value} data-field-name={field.key} data-id={record.Id}
+                                      onchange={genericChangeHandler} style="z-index: 10 !important;">
+                                    </lightning-input-field>
+                                  </template>
+                                </lightning-record-edit-form>
+                              </div>
+                              <!--OUTPUT FIELD-->
+                              <div class={field.contentClass} if:false={field.isInputField}>
+                                <!--<template if:false={field.isImage}>-->
+                                  <div if:true={field.isText} class="textCell">
+                                    <template if:true={field.nameAsURL}>
+                                      <a href={field.nameURL} target="_blank">{field.value}</a>
+                                    </template>
+                                    <template if:false={field.nameAsURL}>
+                                      <template if:true={field.isHTMLFormatted}>
+                                        <lightning-formatted-rich-text value={field.value}>
+                                        </lightning-formatted-rich-text>
+                                      </template>
+                                      <template if:false={field.isHTMLFormatted}>
+                                        {field.value}
+                                      </template>
+                                    </template>
+                                  </div>
+                                  <div if:true={field.isTextArea} class="textCell">
+                                    <template if:true={field.isRichText}>
+                                      <lightning-record-view-form if:true={record.Id}
+                                        object-api-name={instance.objectName} record-id={record.Id}>
+                                        <lightning-output-field variant="label-hidden" field-name={field.key}
+                                          value={field.value}> </lightning-output-field>
+                                      </lightning-record-view-form>
+                                      <div if:false={record.Id} class="slds-truncate" style="max-width:200px"
+                                        title={field.value}>
+                                        {field.value}
+                                      </div>
+                                    </template>
+                                    <template if:false={field.isRichText}>
+                                      <div class="slds-truncate" style="max-width:200px" title={field.value}>
+                                        {field.value}
+                                      </div>
+                                    </template>
+                                  </div>
+                                  <div if:true={field.isMultiPicklist} class="textCell">
+                                    <template if:false={field.relatedField}>
+                                      <ul>
+                                        <template for:each={field.value} for:item="val">
+                                          <li key={val}>{val}</li>
+                                        </template>
+                                      </ul>
+                                      <!-- <lightning-record-view-form object-api-name={instance.objectName}
+                                        record-id={record.Id}>
+                                        <lightning-output-field variant="label-hidden" field-name={field.key}
+                                          value={field.value}>
+                                        </lightning-output-field>
+                                      </lightning-record-view-form> -->
+                                    </template>
+                                    <template if:true={field.relatedField}>
+                                      {field.value}
+                                    </template>
+                                  </div>
+                                  <div if:true={field.isPicklist} class="textCell">
+                                    <template if:false={field.relatedField}>
+                                      <div if:false={record.Id}>
+                                        {field.value}
+                                      </div>
+                                      <div if:true={record.Id}>
+                                        <lightning-record-view-form if:true={field.value}
+                                          object-api-name={instance.objectName} record-id={record.Id}>
+                                          <lightning-output-field variant="label-hidden" field-name={field.key}
+                                            value={field.value}> </lightning-output-field>
+                                        </lightning-record-view-form>
+                                      </div>
+                                    </template>
+                                    <template if:true={field.relatedField}>
+                                      <div if:false={record.Id}>
+                                        {field.value}
+                                      </div>
+                                      <div if:true={record.Id}>
+                                        <lightning-record-view-form if:true={field.value} object-api-name="Product2"
+                                          record-id={field.refId}>
+                                          <lightning-output-field variant="label-hidden" field-name={field.refField}
+                                            value={field.value}>
+                                          </lightning-output-field>
+                                        </lightning-record-view-form>
+                                      </div>
+                                    </template>
+                                  </div>
+                                  <div if:true={field.isDate}>
+                                    <div if:true={record.Id}>
+                                      <lightning-record-view-form if:true={field.value}
+                                        object-api-name={instance.objectName} record-id={record.Id}>
+                                        <lightning-output-field variant="label-hidden" field-name={field.key}
+                                          value={field.value}> </lightning-output-field>
+                                      </lightning-record-view-form>
+                                    </div>
+                                    <div if:false={record.Id}>
+                                      {field.value}
+                                    </div>
+                                  </div>
+                                  <div if:true={field.isDateTime}>
+                                    <div if:true={record.Id}>
+                                      <lightning-record-view-form if:true={field.value}
+                                        object-api-name={instance.objectName} record-id={record.Id}>
+                                        <lightning-output-field variant="label-hidden" field-name={field.key}
+                                          value={field.value}> </lightning-output-field>
+                                      </lightning-record-view-form>
+                                    </div>
+                                    <div if:false={record.Id}>
+                                      {field.value}
+                                    </div>
+                                  </div>
+                                  <div if:true={field.isId} class="textCell">
+                                    <a href={field.url} target="_blank">{field.value}</a>
+                                    <!-- {field.value} -->
+                                  </div>
+                                  <div if:true={field.isUrl} class="textCell">
+                                    <div if:true={field.displayFullURL} class="slds-truncate">
+                                      <a href={field.value} target="_blank">{field.value}</a>
+                                    </div>
+                                    <template if:true={field.value}>
+                                      <div if:true={field.replaceWithText} class="slds-truncate">
+                                        <a href={field.value} target="_blank">{field.replaceURLWith}</a>
+                                      </div>
+                                      <div if:true={field.replaceWithIcon} class="slds-truncate">
+                                        <a href={field.value} target="_blank">
+                                          <lightning-button-icon variant="bare" size="medium" icon-name={field.replaceURLWith}>
+                                          </lightning-button-icon>
+                                        </a>
+                                      </div>
+                                    </template>
+                                  </div>
+                                  <template if:true={field.isPercent}>
+                                    <lightning-formatted-number value={field.value} format-style="percent-fixed"
+                                      maximum-fraction-digits={field.scale}></lightning-formatted-number>
+                                  </template>
+                                  <template if:true={field.isCurrency}>
+                                    <lightning-formatted-number value={field.value} format-style="currency"
+                                      currency-display-as="code"></lightning-formatted-number>
+                                  </template>
+                                  <template if:true={field.isOnlyNumber}>
+                                    <div if:true={record.Id}>
+                                      <lightning-record-view-form if:true={field.value}
+                                        object-api-name={instance.objectName} record-id={record.Id}>
+                                        <lightning-output-field variant="label-hidden" field-name={field.key}
+                                          value={field.value}> </lightning-output-field>
+                                      </lightning-record-view-form>
+                                    </div>
+                                    <div if:false={record.Id}>
+                                      {field.value}
+                                    </div>
+                                  </template>
+                                  <template if:true={field.isBoolean}>
+                                    <lightning-input type="checkbox" checked variant="label-hidden" if:true={field.value}
+                                    disabled>
+                                    </lightning-input>
+                                    <lightning-input type="checkbox" variant="label-hidden" if:false={field.value}
+                                      disabled>
+                                    </lightning-input>
+                                  </template>
+                                  <div if:true={field.isReference} class="textCell">
+                                    <a href={field.url} target="_blank">{field.value}</a>
+                                  </div>
+                                <!--<template>-->
+                                <!--<img if:true={field.isImage} alt={field.image.alt} src={field.image.src}
+                                  class={field.image.class} name={field.image.name} />-->
+                              </div>
+                            </td>
+                          </template>
+                        </template>
+                        <td if:false={isBigObject} scope="col"
+                        class="slds-text-align_center limited-cell slds-border_left">
+                          <div class="slds-grid" if:true={record.Id}>
+                            <a href={record.url} target="_blank">
+                              <lightning-icon icon-name="utility:threedots" size="xx-small">
+                              </lightning-icon>
+                            </a>
+                            <lightning-button-icon data-id={record.Id} icon-name="utility:delete"
+                              class="slds-p-left_x-small" variant="bare" if:true={allowDelete} onclick={deleteByItem}>
+                            </lightning-button-icon>
+                          </div>
+                        </td>
+                        <td if:false={isBigObject} scope="col">
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+                <lightning-spinner variant="brand" size="large" if:true={instance.tableLoading}></lightning-spinner>
+              </div>
+              <lightning-spinner variant="brand" size="small" if:true={instance.hasLoadMoreData}
+                styel="position: relative;"></lightning-spinner>
+            </div>
+            <div if:false={isBigObject} class="slds-grid slds-var-p-around_small slds-size_1-of-1 slds-align-bottom">
+              <lightning-combobox options={pageSizeOptions} value={instance.pageSize} onchange={handlePageSize}
+                dropdown-alignment="bottom-left" variant="label-hidden"
+                class="slds-size_xx-small slds-var-p-right_small">
+              </lightning-combobox>
+              <lightning-button-group class="slds-var-p-right_small">
+                <lightning-button label={Labels.LBL_First} disabled if:true={previousDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_First} onclick={first} if:false={previousDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Previous} disabled if:true={previousDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Previous} onclick={previous} if:false={previousDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Next} disabled if:true={nextDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Next} onclick={next} if:false={nextDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Last} disabled if:true={nextDisabled}>
+                </lightning-button>
+                <lightning-button label={Labels.LBL_Last} onclick={last} if:false={nextDisabled}>
+                </lightning-button>
+              </lightning-button-group>
+              <lightning-badge label={paginationBadge}></lightning-badge>
+            </div>
+          </div>
+          <div class="slds-col slds-var-p-horizontal_small slds-var-m-around_small slds-align_absolute-center"
+            if:false={hasData}>
+            {Labels.LBL_No_Item_To_Display}
+          </div>
+          <!-- filter section -->
+          <!-- <div class="slds-grid slds-no-flex"> -->
+          <div
+            class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-right slds-grid slds-grid_vertical panel-footer-color"
+            if:true={isFilterOpen} style="overflow: unset;">
+            <div class="slds-panel__header" style="background-color: white;">
+              <h2 class="slds-panel__header-title slds-text-heading_small slds-truncate" title={Labels.LBL_Filter}>
+                {Labels.LBL_Filter}</h2>
+              <lightning-button-icon variant="bare" icon-name="utility:close" onclick={toggleFilter}>
+              </lightning-button-icon>
+            </div>
+            <c-grid-settings-filter data-id="filter-panel-cmp" fields={instance.filterSettingsFields}
+              panel-height={panelHeight} number-of-fixed-columns={numberOfFixedColumns} is-popup="false"
+              object-name={instance.objectName} oncancelfiltersettings={closeFilterSettings}
+              cancel-event={Events.cancelFilterSettings} fixed-columns-event={Events.fixedColumns}
+              confirm-event={Events.confirmFilterSettings} onconfirmfiltersettings={confirmFilterSettings}
+              onfixedcolumns={fixedColumnsChanged}>
+            </c-grid-settings-filter>
+          </div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+    <div if:true={instance.deletePopup.show}>
+      <!-- Modal/Popup Box starts here-->
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+        aria-describedby="modal-content-id-3" class="slds-modal slds-fade-in-open ">
+        <div class="slds-modal__container">
+          <!-- Modal/Popup Box Header Starts here-->
+          <header class="slds-modal__header">
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{Labels.LBL_Delete}
+            </div>
+          </header>
+          <!--Modal/Popup Box Body Starts here-->
+          <div class="slds-modal__content slds-var-p-around_medium slds-text-align_center" id="modal-content-id-3">
+            {Labels.MSG_Confirm_Delete} ?
+          </div>
+          <!--Modal/Popup Box Footer Starts here-->
+          <footer class="slds-modal__footer">
+            <lightning-button title={Labels.LBL_Cancel} label={Labels.LBL_Cancel} onclick={cancelDelete}
+              class="slds-var-p-right_x-small">
+            </lightning-button>
+            <lightning-button title={Labels.LBL_Yes} label={Labels.LBL_Yes} variant="brand" onclick={confirmDelete}>
+            </lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+    </div>
+
+    <!-- UploadFile Popup -->
+    <div if:true={instance.uploadFilePopup}>
+      <!-- Modal/Popup Box starts here-->
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+        aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open ">
+        <div class="slds-modal__container">
+          <!-- Modal/Popup Box Header Starts here-->
+          <header class="slds-modal__header">
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{Labels.LBL_Upload_File}
+            </div>
+          </header>
+          <!--Modal/Popup Box Body Starts here-->
+          <div class="slds-modal__content slds-var-p-around_small slds-text-align_center" id="modal-content-id-4">
+            <!-- <lightning-input value={currentUploadfileField.fieldValue} onchange={handleFileUploadChange}>
+            </lightning-input> -->
+            <div class="slds-m-horizontal_small slds-m-bottom_medium">
+              <lightning-file-upload if:true={currentUploadfileRecord} variant='label-hidden' name="fileUploader"
+                record-id={currentUploadfileRecord} onuploadfinished={handleFileUploadChange} multiple>
+              </lightning-file-upload>
+              <lightning-file-upload if:false={currentUploadfileRecord} variant='label-hidden' name="fileUploader"
+                onuploadfinished={handleFileUploadChange} multiple>
+              </lightning-file-upload>
+            </div>
+            <!-- <lightning-input type="file" label="Attachment"  multiple="false" onchange={handleFileUploadChange}></lightning-input> -->
+            <span>
+              {selectedFile.name}
+            </span>
+          </div>
+          <!--Modal/Popup Box Footer Starts here-->
+          <footer class="slds-modal__footer">
+            <lightning-button title={Labels.LBL_Cancel} label={Labels.LBL_Cancel} onclick={handleToggleInputFilePopup}
+              class="slds-var-p-right_x-small">
+            </lightning-button>
+            <lightning-button title={Labels.LBL_Save} label={Labels.LBL_Save} variant="brand"
+              onclick={handleSaveFileUpload} class="slds-var-p-right_x-small">
+            </lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+    </div>
+
+
+    <div if:true={instance.showHideColumns}>
+      <!-- Modal/Popup Box starts here-->
+      <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-05" aria-modal="true"
+        aria-describedby="modal-content-id-5" class="slds-modal slds-fade-in-open ">
+        <div class="slds-modal__container">
+          <!-- Modal/Popup Box Header Starts here-->
+          <header class="slds-modal__header">
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{Labels.LBL_Show_Hide_Columns}
+            </div>
+          </header>
+          <!--Modal/Popup Box Body Starts here-->
+          <div class="slds-modal__content slds-var-p-around_medium slds-text-align_center" id="modal-content-id-5">
+            <lightning-dual-listbox class="slds-p-around--x-small" name="Columns" label={Labels.LBL_Select_Columns}
+              source-label={Labels.LBL_Available} selected-label={Labels.LBL_Selected} options={fieldOptions}
+              disable-reordering onchange={handleChangeSelectedFields} value={instance.selectedFields}>
+            </lightning-dual-listbox>
+          </div>
+          <!--Modal/Popup Box Footer Starts here-->
+          <footer class="slds-modal__footer">
+            <lightning-button title={Labels.LBL_Cancel} label={Labels.LBL_Cancel} onclick={showHideColumns}
+              class="slds-var-p-right_x-small">
+            </lightning-button>
+            <lightning-button title={Labels.LBL_Yes} label={Labels.LBL_Yes} variant="brand"
+              onclick={confirmSelectionFields}>
+            </lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+    </div>
+  </div>
+</template>

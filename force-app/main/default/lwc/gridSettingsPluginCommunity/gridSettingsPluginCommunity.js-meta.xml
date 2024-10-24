@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>negOptim Grid Settings Plugin Community</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="Record ID" description="Should be set to {!recordId} if in community, empty if recordPage" default="" />
+            <property name="templateName" type="String" label="Grid Settings Template" required="true" datasource="apex://GridSettingsPluginDataSource" default="" />
+            <property name="filterOnNoneDisplayedFields" type="Boolean" label="Filter on fields that are no displayed in the grid" default="false" />
+            <property name="allowDelete" type="Boolean" label="Display Delete Button" default="false" />
+            <property name="allowFilter" type="Boolean" label="Display Filter" default="false" />
+            <property name="readOnly" type="Boolean" label="Read Only" default="false" />
+            <property name="showSubTotal" type="Boolean" label="Show Sub Total" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

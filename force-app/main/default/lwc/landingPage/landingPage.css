@@ -1,0 +1,6 @@
+.noHyperlinkStyle a:link,
+.noHyperlinkStyle a:visited,
+.noHyperlinkStyle a:hover,
+.noHyperlinkStyle a:active {
+    color:white;
+}

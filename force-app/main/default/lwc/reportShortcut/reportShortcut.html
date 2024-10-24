@@ -1,0 +1,141 @@
+<template>
+    <article class="slds-card" style={mainTableInlineCss}>
+        <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body slds-truncate">
+                    <h2>
+                        <b> <span class="slds-text-heading_small">{LBL_MyReports}</span></b>
+                    </h2>
+                </div>
+            </div>
+            <div class="slds-no-flex">
+                <slot name="actions">
+                    <lightning-button-icon onclick={createReport} icon-name="utility:add" alternative-text={LBL_Create}>
+                    </lightning-button-icon>
+                    <lightning-button-icon onclick={refreshTable} icon-name="utility:refresh"
+                        alternative-text="Refresh"></lightning-button-icon>
+                </slot>
+            </div>
+        </header>
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                {LBL_Error_Loading_List}
+            </div>
+        </template>
+        <template if:true={Loading}>
+            <lightning-spinner size="small" variant="brand"></lightning-spinner>
+        </template>
+        <template if:true={reports}>
+            <div class="slds-card__body">
+                <slot>
+                    <div class="slds-is-relative">
+                        <div class="slds-scrollable slds-m-horizontal_x-small" style="max-height: 300px;">
+                            <table class="slds-table slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-text-title_caps">
+                                        <th style={textColorHeaderInlineCss}>{reportNameLabel}</th>
+                                        <th style={textColorHeaderInlineCss}>{reportFolderNameLabel}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={reports} for:item="report">
+                                        <tr key={report.Id}>
+                                            <td><a style={textColorInlineCss} href={report.url}
+                                                    target="_blank">{report.Name}</a></td>
+                                            <td style={textColorInlineCss}>{report.FolderName}</td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+        </template>
+    </article>
+    <template if:true={open}>
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium slds-hyphenate">{LBL_choose_a_template}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-is-relative">
+                            <template if:true={Loading2}>
+                                <lightning-spinner size="small" variant="brand"></lightning-spinner>
+                            </template>
+                        </div>
+                        <template if:true={allReports}>
+                            <div class="slds-clearfix">
+                                <div class=" slds-float_left slds-m-top_x-small">
+                                    <lightning-input variant="label-hidden" type="text" value={searchText}
+                                        data-recordid="searchid" placeholder={LBL_Search}
+                                        onchange={handleSearchTermChange}>
+                                    </lightning-input>
+                                </div>
+                                <div class=" slds-float_right slds-m-top_x-small">
+                                    <div
+                                        class="slds-form-element__control slds-align_absolute-center slds-m-bottom_x-small">
+                                        <div class="slds-radio_button-group">
+                                            <span class="slds-button slds-radio_button">
+                                                <input name="radio" type="radio" id="Target" value="standard"
+                                                    checked={stCheck} onclick={onclickStdrd} />
+                                                <label class="slds-radio_button__label" for="Target">
+                                                    <span class="slds-radio_faux">{LBL_Standard_Reports}</span>
+                                                </label>
+                                            </span>
+                                            <span class="slds-button slds-radio_button">
+                                                <input name="radio" type="radio" id="Nego" value="all"
+                                                    checked={allCheck} onclick={onclickAll} />
+                                                <label class="slds-radio_button__label" for="Nego">
+                                                    <span class="slds-radio_faux">{LBL_All_Reports}</span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="height: 300px">
+                                <template for:each={allReports} for:item="rprt">
+                                    <b key={rprt.FolderName}>
+                                        <h1>{rprt.FolderName}</h1>
+                                    </b>
+                                    <lightning-layout multiple-rows="true" key={rprt.FolderName}>
+                                        <template for:each={rprt.list} for:item="rprtItem">
+                                            <lightning-layout-item key={rprtItem.Id} size="4"
+                                                class="slds-p-around_x-small">
+                                                <div class="slds-has-dividers_around-space" data-recordid={rprtItem.Id}
+                                                    onclick={chooseTemplate}>
+                                                    <div class="slds-item slds-scrollable--y" style="height: 100px">
+                                                        <article class="slds-tile slds-tile_board ">
+                                                            <p class="slds-text-heading-small">
+                                                                <b>{reportNameLabel}: </b>
+                                                                {rprtItem.Name}
+                                                                <br>
+                                                                <b>{reportDescriptionLabel}: </b>
+                                                                {rprtItem.Description}
+                                                            </p>
+                                                        </article>
+                                                    </div>
+                                                </div>
+                                            </lightning-layout-item>
+                                        </template>
+                                    </lightning-layout>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label={LBL_Cancel} variant="neutral" onclick={close}>
+                        </lightning-button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <lightning-button label={LBL_Next} variant="brand" disabled={btnNext} onclick={create}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

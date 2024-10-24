@@ -1,0 +1,344 @@
+.text-container {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: medium;
+  }
+
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  img {
+    max-width: 20%; /* Adjust the value as needed to reduce the size */
+    height: auto; /* Maintain aspect ratio */
+  }
+
+  a {
+    color: #0070d2; /* Salesforce blue color for links */
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+.g_nm{
+    display:inline-block
+}
+.submitBackground{
+    background: #d4f6d4;
+    /* background: #C0ECAA; */
+}
+.noSubmitBackground{
+    background: #ffffff;
+    /* background: #C0ECAA; */
+}
+
+.vm{
+    vertical-align: middle;
+}
+.brdr{
+    border:1px solid gray
+}
+
+.fs10{
+    font-size: 10px;
+}
+
+.fs20{
+    font-size: 20px;
+}
+
+.fs23{
+    font-size: 23px;
+}
+
+.fs16{
+    font-size: 16px;
+}
+
+.fs18{
+    font-size: 18px;
+}
+
+.cc{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50% 0px;
+}
+.pr{
+    position: relative;
+}
+
+.ft{
+    font-weight: 500;
+}
+.b{
+    font-weight:bold
+}
+.ov{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0
+}
+.fs0{
+    font-size: 0px;
+}
+
+.fs14{
+    font-size: 14px;
+}
+.vt{
+    vertical-align: top ;
+
+}
+.fs14{
+    font-size: 14px;
+}
+.pointer {
+    cursor: pointer
+}
+.round2x {
+    border-radius: .5rem!important
+}
+
+.pf {
+    position: fixed
+}
+.w100{
+    width:100%
+}
+.con{
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center
+}
+.sq {
+    aspect-ratio: 1/1
+}
+.c {
+    text-align: center
+}
+.w5{
+    width:5%
+}
+.w6{
+    width:6%
+}
+.w8{
+    width: 8%;
+}
+.w9{
+    width: 9%;
+}
+.w10{
+    width:10%
+}
+.w14{
+    width:14%
+}
+.w15{
+    width: 15%;
+}
+.w19{
+    width: 19%;
+}
+.w20{
+    width:20%
+}
+.w25{
+    width:25%
+}
+.w81{
+    width: 81%;
+}
+.h50{
+    height: 50px;
+}
+.p10{
+    padding: 10px;
+}
+.p5{
+    padding: 5px;
+}
+*:focus {
+    outline: none;
+  }
+
+/*calender css*/
+.circle-cal{
+    border:1px solid transparent;
+}
+.calendar-body {
+    padding: 7px;
+
+}
+
+.calendar-body .calendar-weekdays div {
+    cursor: default;
+    color:#9CA2AB
+}
+.calendar-dates{
+    text-align: center;
+    font-size: 1.07rem;
+    color: #414141 !important;
+}
+.calendar-dates .parent-circle{
+    width:41px;
+    height:41px;
+    border-radius:50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border:1px solid transparent;
+    color: #414141;
+  }
+
+.calendar-body .calendar-dates div {
+    cursor: pointer;
+}
+
+.calendar-dates div.inactive {
+    color: rgb(156,162,171,.6);
+}
+.calendar-dates div.inactiveCurrent {
+    color: rgb(156,162,171,.6);
+}
+
+.calendar-dates .missing{
+    background:rgb(255,102,147,.1);
+    border:1px solid #FF6693
+}
+
+.calendar-dates .incompleteDay{
+    background:rgb(110, 108, 103,.1);
+    border:1px solid #6e6c67
+}
+
+.calendar-dates .off{
+    background: #F58948;
+}
+
+.calendar-dates .sick{
+   background:#AE39F4 
+}
+.calendar-dates .remote{
+    background: #2EDC7F
+ }
+
+ .calendar-dates .weekend{
+    background: #F5D242
+ }
+
+ .calendar-dates .holiday{
+    background: #0176D3
+ }
+
+ .calendar-dates .active{
+    border:1px solid #0176D3;
+    color:#0176D3;
+    font-weight: bold;
+    background: white;
+}
+
+ .calendar-dates .active-day{
+    background:rgb(217,235,248,.7);
+    border:1px solid #0176D3
+}
+
+.inactive .weekend{
+    opacity: .4;
+}
+.inactive .remote{
+    opacity: .4;
+} 
+ 
+.inactive .sick{
+    opacity: .4;
+ } 
+  
+ .inactive .off{
+    opacity: .4;
+
+ }  
+ .inactive .missing{
+    opacity: .4;
+
+ }
+ .inactive .holiday{
+    opacity: .4;
+
+ }
+
+
+
+/*calender css*/
+
+/*custom radio button css*/
+
+.buttons {
+    background: white;
+    border-radius:5px;
+    width: fit-content;
+  }
+
+  .buttons input {
+    appearance: none;
+    cursor: pointer;
+    padding: 7px 13px;
+    background: white;
+    color: #0176D3;
+    font-size: 13px;
+  }
+
+  .buttons input:checked {
+    background: #0176D3;
+    color:white
+  }
+
+  .buttons input::before {
+    content: attr(label);
+  } 
+  .h{
+    display: none;
+  }
+
+/*custom radio button css*/
+/* @media all and (max-width: 1620px) {
+    .md_h,[md_h]{
+        display: none;
+    }
+    .md_w100,[md_w100]{
+        width:100%;
+    }
+    .md_h{
+        display: none;
+    }
+    .md_sb,[md_sb]{
+        display: block;
+    }
+
+} */
+@media (max-width: 1624px) {
+    .md_w21,[md_w21]{
+        width: 23%;
+    }
+    .md_w79,[md_w79]{
+        width: 77%;
+    }
+
+} 
+
+
+    @media (max-width: 1380px) {
+        .m_m_w25,[m_m_w25]{
+            width: 25%;
+        }
+        .m_m_w75,[md_w75]{
+            width: 75%;
+        }
+}

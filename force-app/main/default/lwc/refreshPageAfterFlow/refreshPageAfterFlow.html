@@ -1,0 +1,11 @@
+<template>
+    <div class="slds-align-absolute_center" style="position: relative; display: inline-block; width: 10vh;">
+        <lightning-spinner variant="brand" size="small" if:true={loading}></lightning-spinner>
+    </div>
+    <div if:false={loading}>
+        <div if:true={isTakingLongTime} class="slds-text-align_center">
+            Il parait que la tache en cours d'execution va prendre plus de temps. veuillez vous patienter avant de
+            rafraichir l'ecran.
+        </div>
+    </div>
+</template>

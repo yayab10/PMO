@@ -1,0 +1,25 @@
+.sticky-header {
+    position: sticky;
+    top: 0px;
+    z-index: 3;
+}
+
+.THIS td {
+    overflow: initial;
+}
+
+.panel-footer-color {
+    background-color: var(--lwc-colorBackground);
+}
+
+.limited-cell {
+    width: 1px;
+}
+
+.error-icon {
+    --sds-c-icon-color-foreground-default: red;
+}
+.textCell {
+    white-space: pre-wrap;
+    word-break: break-word;
+}

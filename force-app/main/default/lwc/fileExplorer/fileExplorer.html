@@ -1,0 +1,61 @@
+<template>
+    <lightning-card title="File Explorer">
+        <div slot="actions" class="slds-p-top_xx-small">
+            <div class="slds-clearfix">
+                <lightning-input type="search" onchange={searchTermchangeHandler} onkeypress={submitSearchOnEnter}
+                    variant="label-hidden" class="slds-p-left_small slds-float_left slds-m-right_medium">
+                </lightning-input>
+                <lightning-button-icon icon-name="utility:refresh" onclick={refreshData}>
+                </lightning-button-icon>
+            </div>
+        </div>
+        <div class="slds-p-around_x-small slds-is-relative">
+            <lightning-spinner size="large" variant="brand" if:true={Loading}></lightning-spinner>
+            <!-- ScrollDiv is responsible for handling scrollevent to which more data can be fethced -->
+            <div data-id="ScrollDiv" class="slds-is-relative slds-scrollable" style="height: 60vh; "
+                onscroll={ScrollEventHandler}>
+                <lightning-layout data-id="ScrollDiv" multiple-rows if:false={noData}>
+                    <template for:each={images} for:item='image'>
+                        <lightning-layout-item key={image.imageId} size="12" small-device-size="6"
+                            medium-device-size="4" large-device-size="3" class="pre-wrap slds-p-around_xx-small">
+                            <!--if File brought is an image type then use an img tag-->
+                            <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                                <template if:true={image.fileIsImage}>
+                                    <div><img src={image.url} class='boxed-image'></img>
+                                    </div>
+                                </template>
+                                <!-- else use lightning Icon to display an slds icon-->
+                                <template if:false={image.fileIsImage}>
+                                    <div>
+                                        <lightning-icon size="large" class="slds-align_absolute-center boxed-image"
+                                            icon-name={image.url}></lightning-icon>
+                                    </div>
+                                </template>
+                                <div><a href={image.link} target="_blank">{image.title}</a></div>
+                                <div if:true={ShowURL}>{image.url}</div>
+                            </div>
+                        </lightning-layout-item>
+                    </template>
+                    <!--this article is created to run the loadmore event if a scroll bar is not visible yet there are more files to fetch-->
+                    <template if:true={NoScrollBarVisibleForRemainingFiles}>
+                        <lightning-layout-item size="12" small-device-size="6" medium-device-size="4"
+                            large-device-size="3" class="pre-wrap slds-p-around_xx-small">
+                            <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                                <div>
+                                    <lightning-icon size="small" class="slds-align_absolute-center boxed-image"
+                                        icon-name="action:more" onclick={LoadMoreFiles}></lightning-icon>
+                                </div>
+                                <div>{Label.LBL_Load_More_Files}</div>
+                            </div>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+                <div if:true={noData} class='slds-grid slds-grid_vertical-align-center fit-parent content-center'>
+                    <div class="slds-align-middle">
+                        {Label.LBL_No_Item_To_Display}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

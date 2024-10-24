@@ -1,0 +1,54 @@
+<template>
+        <template if:true={loading}>
+                <div>
+                        <lightning-spinner size="large" variant="brand" alternative-text="Loading"></lightning-spinner>
+                </div>
+        </template>
+    <template if:false={loading}>
+      <lightning-card title={selectedFolder}>
+              <div if:true={field1FalseRow} style="color:red;font-size:24pt;">
+                      Row field {rowfieldObject1} not found in object {rowObject} !
+              </div>
+              <div if:true={field2FalseRow} style="color:red;font-size:24pt;">
+                Row field {rowfieldObject2} not found in object {rowObject} !!!
+              </div>
+              <div if:true={field1FalseCol} style="color:red;font-size:24pt;">
+                Row field {colfieldObject1} not found in object {colObject} !
+             </div>
+             <div if:true={field2FalseCol} style="color:red;font-size:24pt;">
+                Row field {colfieldObject2} not found in object {colObject} !
+             </div>
+            <div class="slds-scrollable" style={heightStyle}>
+                <template for:each={listOfReport} for:item="report">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-scrollable_y" key={report.Id}>
+                            <thead>
+                                    <tr class="slds-line-height_reset">
+                                            <th scope="col" class="headerStyle">{report.Name}</th>
+                                                <template for:each={colData} for:item="circuit">
+                                                <th scope="col" class="headerStyle" key={circuit.Name}>{circuit.Name}</th>
+                                            </template>
+                                        </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={rowData} for:item="category">
+                                        <tr class="slds-hint-parent" key={category.Name}>
+                                                <td class="categoryMinWidth">{category.Name}</td>
+                                          <template for:each={colData} for:item="circuit">
+                                               <td class="cellStyle" key={circuit.Name}>
+                                                    <!--a href={generateUrl} target="_Blank">
+                                                            {label.viewLabel}
+                                                    </a-->
+                                                    <a href={generateUrlDynamic} target="_Blank">
+                                                                {label.viewLabel}
+                                                        </a>
+                                               </td>
+                                          </template>
+                                        </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                </template>
+            </div>
+      </lightning-card>
+      </template>
+</template>

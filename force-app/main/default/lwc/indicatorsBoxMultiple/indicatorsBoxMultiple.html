@@ -1,0 +1,71 @@
+<template>
+    <div class="slds-card" style={backgroundColor}>
+        <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body slds-truncate">
+                    <h2><span class="slds-text-heading_small">{description}</span></h2>
+                </div>
+            </div>
+        </header>
+        <template if:false={isVertical}>
+            <lightning-layout class="slds-p-around_none" multiple-rows="true" pull-to-boundary="">
+                <template for:each={boxes} for:item="box">
+                    <lightning-layout-item flexibility="auto" key={box.index} class="slds-p-around_x-small">
+                        <div class="slds-has-dividers_around-space slds-p-around_x-small">
+                            <div class="slds-item" style={box.boxStyle}>
+                                <article class="slds-tile  slds-truncate">
+                                    <p style="font-size: 0.9rem" class="slds-align_absolute-center">{box.label}</p>
+                                    <p style={box.currentStyle} class="slds-align_absolute-center">
+                                        <template if:true={box.isCurrency}>
+                                            <lightning-formatted-number value={box.value} format-style="currency"
+                                                currency-code={box.currencyIsoCode} currency-display-as="code"
+                                                minimum-fraction-digits={box.fractiondigits}>
+                                            </lightning-formatted-number>
+                                        </template>
+                                        <template if:true={box.isNumber}>
+                                            <lightning-formatted-number value={box.value} format-style="decimal"
+                                                minimum-fraction-digits={box.fractiondigits}>
+                                            </lightning-formatted-number>
+                                        </template>
+                                        <template if:true={box.isPercent}>
+                                            <lightning-formatted-number value={box.value} format-style="percent"
+                                                minimum-fraction-digits={box.fractiondigits}>
+                                            </lightning-formatted-number>
+                                        </template>
+                                    </p>
+                                </article>
+                            </div>
+                        </div>
+
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+        </template>
+        <template if:true={isVertical}>
+            <template for:each={boxes} for:item="box">
+                <div key={box.index} class=" slds-has-dividers_around-space slds-p-around_x-small">
+                    <div class="slds-item" style={box.boxStyle}>
+                        <article class="slds-tile  slds-truncate">
+                            <p style="font-size: 0.9rem" class="slds-align_absolute-center">{box.label}</p>
+                            <p style={box.currentStyle} class="slds-align_absolute-center">
+                                <template if:true={box.isCurrency}>
+                                    <lightning-formatted-number value={box.value} format-style="currency"
+                                        currency-code={box.currencyIsoCode} currency-display-as="code"
+                                        minimum-fraction-digits={box.fractiondigits}></lightning-formatted-number>
+                                </template>
+                                <template if:true={box.isNumber}>
+                                    <lightning-formatted-number value={box.value} format-style="decimal"
+                                        minimum-fraction-digits={box.fractiondigits}></lightning-formatted-number>
+                                </template>
+                                <template if:true={box.isPercent}>
+                                    <lightning-formatted-number value={box.value} format-style="percent"
+                                        minimum-fraction-digits={box.fractiondigits}></lightning-formatted-number>
+                                </template>
+                            </p>
+                        </article>
+                    </div>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

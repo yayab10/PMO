@@ -1,0 +1,52 @@
+lightning-button-icon.In .slds-button__icon {
+  fill: blue !important;
+}
+
+lightning-button-icon.Out .slds-button__icon {
+  fill: orange !important;
+}
+
+lightning-button-icon.Personalised .slds-button__icon {
+  fill: green !important;
+}
+
+option.In {
+  color: blue;
+}
+
+option.Out {
+  color: orange;
+}
+
+option.Personalised {
+  color: green;
+}
+
+.dimmedField {
+  opacity: 0.4;
+}
+
+select.slds-input {
+  padding: 0;
+}
+
+.slds-button.In {
+  background-color: blue;
+  color: var(--lwc-colorTextButtonBrand, rgb(255, 255, 255)) !important;
+}
+
+.slds-button.Out {
+  background-color: orange;
+  color: var(--lwc-colorTextButtonBrand, rgb(255, 255, 255)) !important;
+}
+
+.oSelect {
+  min-height: 200px;
+  min-width: 250px;
+  max-width: 250px;
+}
+
+.custom_slds-grid_align-start,
+.custom--slds-grid--align-start {
+  justify-content: flex-start;
+}

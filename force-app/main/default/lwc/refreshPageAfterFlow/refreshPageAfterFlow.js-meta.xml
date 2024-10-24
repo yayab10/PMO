@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <masterLabel>negOptim Flow Refresher</masterLabel>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="usedInCommunity" type="Boolean" label="Used in Community" description="Check this box to change the behavior when handling URLs" default="false"/>
+            <property name="recordId" type="String" label="Record ID" description="S" default=""/>
+            <property name="reloadSamePage" type="Boolean" label="Reload Same Page" description="Set to true if the current page needs to be reloaded" default="False"/>
+            <property name="refreshOtherComponents" type="Boolean" label="Refresh Other LWCs" description="Set to true other LWCs need to be refreshed" default="False"/>
+            <property name="vfPageName" type="String" label="Redirects to a URL" description="set a URl (dont forget to add /apex/ first for VF pages)" default=""/>
+            <property name="batchId" type="String" label="Batch ID" description="Id of the batch to monitor before refreshing the page" default=""/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

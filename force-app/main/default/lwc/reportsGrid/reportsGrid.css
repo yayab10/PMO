@@ -1,0 +1,40 @@
+.headerStyle {
+    background-color: #b8dbf5 !important;
+    text-align:center;
+    z-index: 4;
+    position: sticky;
+    top: 0;
+}
+.emptyCell {
+    height:35px;
+    background-color:#eaf1ff !important;
+}
+
+.categoryMinWidth {
+    min-width:300px;
+    background-color:#eaf1ff !important;
+}
+
+.reportFolder {
+    font-size: 18pt;
+    background-color: #c0d6ff !important;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+.cellStyle {
+    text-align:center;
+    table-layout: auto;
+    width: 180px;  
+    
+}
+.folderNameStyle {
+    font-size: 18pt;
+    background-color: #c0d6ff !important;
+    text-align: center;
+    font-weight: bold;
+}
+.scrollableSize {
+    height:400px;
+}

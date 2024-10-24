@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="reportViewer">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim Report Viewer</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__RecordPage,lightning__AppPage">
+            <property name="folderName" type="String" label="Folder Name:" datasource="apex://ReportsGridDataSource" description="The folder Name of the reports"/>
+            <property name="height" type="Integer" label="Table height:" description="the height of the table"/>
+            <property name="backgroundColor" type="String" label="Background Color" placeholder="#ffffff or white" description="the background color of the box"/>
+            <property name="color" type="String" label="Text Color" placeholder="#000000 or black" description="the text color of the box"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

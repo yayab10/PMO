@@ -1,0 +1,39 @@
+<template>
+    <div>
+        <a href={btnurl} class={btnClassCSS} target={targetTab} style={btnInlineStyle}>
+            <div class="container">
+                <template if:true={showButtonIcon}>
+                    <div class="slds-align_absolute-center">
+                        <span class="slds-icon_container null slds-icon__svg--default">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="slds-icon slds-icon-text-default"
+                                aria-hidden="true" style={iconInlineStyle}>
+                                <use xlink:href={iconHref}></use>
+                            </svg>
+                        </span>
+                        <template if:true={showbtnfirstlabel}>
+                            {btnfirstlabel}
+                        </template>
+                    </div>
+                </template>
+                <template if:true={showIconWithoutText}>
+                    <div class="slds-align_absolute-center">
+                        <span class="slds-icon_container null slds-icon__svg--default">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="slds-icon slds-icon-text-default"
+                                aria-hidden="true" style={iconInlineStyle}>
+                                <use xlink:href={iconHref}></use>
+                            </svg>
+                        </span>
+                    </div>
+                </template>
+                <template if:true={showTextWithoutIcon}>
+                    <div>
+                        {btnfirstlabel}
+                    </div>
+                </template>
+                <template if:true={showbtnsecondlabel}>
+                    <div> {btnsecondlabel}</div>
+                </template>
+            </div>
+        </a>
+    </div>
+</template>

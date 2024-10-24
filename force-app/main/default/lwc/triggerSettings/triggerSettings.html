@@ -1,0 +1,10 @@
+<template>
+    <lightning-card title={Labels.LBL_Trigger_Settings}>
+        <div class="slds-scrollable slds-size_1-of-1" style="height: 55vh;">
+            <lightning-datatable data={triggerSettingsList} columns={columns} key-field="id" draft-values={draftValues}
+                data-recordid="datatable" onsave={handleSave} oncancel={reset} sorted-by={sortBy}
+                sorted-direction={sortDirection} onsort={handleSortdata}>
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,269 @@
+<template>
+    <lightning-card title={Label.LBL_Access_To_Supplier_Portal} icon-name="standard:account">
+        <div slot="actions" class="slds-grid">
+            <template if:true={data}>
+                <template if:true={hasUsers}>
+                    <lightning-input class="slds-p-left--x-small" type="search" onchange={handleSearchForUserTermChange}
+                        variant="label-hidden" label="Search" placeholder="Search for User" value={searchUserTerm}
+                        slot="actions">
+                    </lightning-input>
+                    <lightning-button-icon class="slds-p-left--x-small" icon-name="utility:refresh"
+                        onclick={refreshData} slot="actions">
+                    </lightning-button-icon>
+                    <template if:true={showActiveDesactiveButton}>
+                        <lightning-button-menu class="slds-p-left--x-small" alternative-text="Show menu"
+                            variant="border-filled" icon-name="utility:settings" slot="actions">
+                            <lightning-menu-item label={Label.LBL_Activate} onclick={activateAllUsers}
+                                disabled={isAllUserActivated}>
+                            </lightning-menu-item>
+                            <lightning-menu-item label={Label.LBL_Deactivate} onclick={deactivateAllUsers}
+                                disabled={isAllUserDeactivated}>
+                            </lightning-menu-item>
+                        </lightning-button-menu>
+                    </template>
+                </template>
+                <template if:true={showAddNewUserButton}>
+                    <lightning-button variant="brand" class="slds-p-left--x-small" key={data.accId}
+                        label={Label.LBL_Add_New_User} onclick={openNewUserModal} data-id={data.accId}
+                        data-name={data.accountName} disabled={deactivatedSupplier} slot="actions">
+                    </lightning-button>
+                </template>
+            </template>
+        </div>
+        <template if:true={isLoading}>
+            <br /><br />
+            <div class="slds-var-p-horizontal_small">
+                <div class="spinner">
+                    <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                    </lightning-spinner>
+                </div>
+            </div>
+        </template>
+        <div if:true={noProfile} class="slds-m-around--medium">
+            <p class="danger"> {Label.MSG_Community_User_Profile_Not_Selected}</p>
+        </div>
+        <div if:true={error}>
+            <p class="margin16"> {Label.MSG_Error_Occurred} </p>
+        </div>
+        <template if:true={data}>
+            <template if:false={hasUsers}>
+                <div class="slds-form-element">
+                    <p class="margin16"> {Label.LBL_No_User_Community}</p>
+                </div>
+            </template>
+            <template if:true={hasRecord}>
+                <div style="height: 200px">
+                    <c-custom-data-table key-field="Id" data={data.users} columns={columns}
+                        onrowaction={handleRowActions} data-id="usersTable" onloadmore={loadMoreData}
+                        is-loading={tableIsLoading} enable-infinite-loading
+                        default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
+                        sorted-by={sortedBy} onsort={onHandleSort} onrowselection={handleRowSelection}
+                        onheaderaction={handleHeaderAction}>
+                    </c-custom-data-table>
+                </div>
+            </template>
+            <template if:false={hasRecord}>
+                <p style="text-align: center;"> {Label.LBL_No_Record_To_Display}</p>
+            </template>
+        </template>
+    </lightning-card>
+    <template if:true={openModal}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="0" aria-labelledby="modal-heading-02" aria-modal="true"
+            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div style="position:absolute; min-width: 100%;">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">
+                            <template if:true={editUserModal}>
+                                {Label.Edit} {username}
+                            </template>
+                            <template if:true={addNewUserModal}>
+                                Add New User Community To {selectedAccount.name} Account
+                            </template>
+                        </h2>
+                    </header>
+                    <template if:true={isLoadingModal}>
+                        <lightning-spinner class="innerSpiner" alternative-text="Loading" variant="brand" size="large">
+                        </lightning-spinner>
+                    </template>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <lightning-layout>
+                            <!-- Salutation -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-combobox name="salutation" label={Label.Salutation}
+                                        onchange={handlesalutation} value={salutation} options={allSalutation}>
+                                    </lightning-combobox>
+
+                                </div>
+                            </lightning-layout-item>
+                            <!-- Status -->
+                            <template if:true={addNewUserModal}>
+                                <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                    <div class="slds-form-element">
+                                        <lightning-combobox label={Label.Status} value={defaultStatus}
+                                            onchange={handleStatus} required placeholder={Label.Status}
+                                            options={statusOptions}>
+                                        </lightning-combobox>
+                                    </div>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <!-- Firstname -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="text" class="firstName" name="firstname"
+                                        label={Label.User.FirstName} onchange={handlefirstName} value={firstName}>
+                                    </lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                            <!-- LastName -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="text" class="lastName" name="lastName"
+                                        label={Label.User.LastName} required onchange={handlelastName} value={lastName}
+                                        placeholder="Last Name">
+                                    </lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <!-- Email -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="email" class="email" name="email" label={Label.User.Email}
+                                        required onchange={handleemail} value={email} placeholder="Email Adress">
+                                    </lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                            <!-- Username  -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="email" class="username" name="username"
+                                        label={Label.User.Username} required onchange={handleusername} value={username}
+                                        placeholder="user@companyX.com">
+                                    </lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout>
+                            <!-- Title -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="text" class="title" name="title" label={Label.User.Title}
+                                        value={title} onchange={handletitle} placeholder="CEO, CFO,..">
+                                    </lightning-input>
+
+                                </div>
+                            </lightning-layout-item>
+                            <!-- Phone number -->
+                            <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                    <lightning-input type="phone" class="phone" name="phone" label={Label.User.Phone}
+                                        onchange={handlephone} value={phone}>
+                                    </lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <template if:true={hasExtraContactFields}>
+                            <template if:true={addNewUserModal}>
+                                <lightning-record-edit-form object-api-name="Contact">
+                                    <div class="slds-grid slds-wrap slds-p-top_xx-small">
+                                        <template for:each={extraContactFieldsCol1} for:item="field">
+                                            <div key={field.fieldName} class="slds-col slds-size_1-of-2">
+                                                <lightning-input-field field-name={field.fieldName} data-fieldname={field.fieldName} onchange={handleChanges}>
+                                                </lightning-input-field>
+                                            </div>
+                                        </template>
+                                        <template for:each={extraContactFieldsCol2} for:item="field">
+                                            <div key={field.fieldName} class="slds-col slds-size_1-of-2">
+                                                <lightning-input-field field-name={field.fieldName} data-fieldname={field.fieldName} onchange={handleChanges}>
+                                                </lightning-input-field>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </lightning-record-edit-form>
+                            </template>
+                            <template if:false={addNewUserModal}>
+                                <div class="slds-grid slds-wrap slds-p-top_xx-small">
+                                    <template for:each={extraContactFieldsCol1} for:item="field">
+                                        <div key={field.fieldName}  class="slds-col slds-size_1-of-2">
+                                            <div class="slds-grid">
+                                                <lightning-record-edit-form object-api-name="Contact" record-id={contactId} class="slds-col">
+                                                    <lightning-input-field field-name={field.fieldName} data-fieldname={field.fieldName} onchange={handleChanges}>
+                                                    </lightning-input-field>
+                                                </lightning-record-edit-form>
+                                            </div>
+                                        </div>
+                                        </template>
+                                        <template for:each={extraContactFieldsCol2} for:item="field">
+                                            <div key={field.fieldName}  class="slds-col slds-size_1-of-2">
+                                                <div class="slds-grid">
+                                                    <lightning-record-edit-form object-api-name="Contact" record-id={contactId} class="slds-col">
+                                                        <lightning-input-field field-name={field.fieldName} data-fieldname={field.fieldName} onchange={handleChanges}>
+                                                        </lightning-input-field>
+                                                    </lightning-record-edit-form>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                            </template>
+                        </template>
+                        <lightning-layout>
+                            <!-- Is Main -->
+                           <!-- <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                <div class="slds-form-element">
+                                     <label class="slds-form-element__label">
+                                        {Label.IsMain}
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input type="checkbox" onchange={handleIsMain} checked={IsMain}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>-->
+                            <template if:true={LicenseError}>
+                                <lightning-layout-item class="slds-var-p-around_xx-small" size="6">
+                                    <div class="slds-form-element">
+                                        <p class='danger'> Error: {LicenseError}</p>
+                                    </div>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal}
+                            title="Cancel">{Label.Cancel}</button>
+                        <template if:true={editUserModal}>
+                            <lightning-button class="slds-p-left--x-small" variant="brand"
+                                disabled={checkRequiredFields} onclick={updateUser} label={Label.Save}>
+                            </lightning-button>
+                        </template>
+                        <template if:true={addNewUserModal}>
+                            <!-- save button -->
+                            <lightning-button class="slds-p-left--x-small" variant="brand"
+                                disabled={checkRequiredFields} data-new="false" onclick={addNewUser} label={Label.Save}>
+                            </lightning-button>
+                            <!-- save and new button -->
+                            <lightning-button class="slds-p-left--x-small" variant="brand"
+                                disabled={checkRequiredFields} data-new="true" onclick={addNewUser}
+                                label={Label.LBL_Save_And_New}>
+                            </lightning-button>
+                        </template>
+                    </footer>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
