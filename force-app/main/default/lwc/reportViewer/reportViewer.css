@@ -1,0 +1,9 @@
+.fixedHeader {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background-color: #b8dbf5;
+}
+.yearStyle {
+  width: 35%;
+}

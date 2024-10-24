@@ -1,0 +1,138 @@
+<template>
+    <article class="slds-card" style={backgroundColorBox}>
+        <header class="slds-card__header slds-grid">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body slds-truncate">
+                    <h2>
+                        <b> <span class="slds-text-heading_small" style={tableStyle}>{folderNameTitle}</span></b>
+                    </h2>
+                </div>
+            </div>
+            <div class="slds-no-flex">
+                <slot name="actions">
+                    <lightning-button-icon icon-name="utility:filterList" alternative-text={label.LBL_Show_Filter}
+                        variant="base" size="large" onclick={openFilter} icon-class="filterIcon">
+                    </lightning-button-icon>
+                </slot>
+            </div>
+        </header>
+        <div class="slds-card__body" style={tableStyle}>
+            <lightning-layout class="slds-grid" if:true={filterIsOpen} style={backgroundColorBox}>
+                <lightning-layout-item padding="around-small" class="slds-size_6-of-12">
+                    <lightning-combobox name="buSource" label={buSourceLabel} value="" options={buSourceOptions}
+                        onchange={changeBuSource}></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" class="slds-size_6-of-12">
+                    <lightning-combobox name="buTarget" label={buTargetLabel} value="" options={buTargetOptions}
+                        onchange={changeBuTarget} disabled={buTargetDisabled}>
+                    </lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout class="slds-grid" if:true={filterIsOpen} style={backgroundColorBox}>
+                <lightning-layout-item padding="around-small" class="slds-size_6-of-12">
+                    <lightning-combobox name="category" label={CategoryLabel} value="" options={categoryOptions}
+                        onchange={changeCategory}></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" class="slds-size_6-of-12">
+                    <lightning-input type="text" label={YearLabel} class="yearStyle" value={selectedYear}
+                        onchange={handleYearChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout class="slds-grid" if:true={filterIsOpen} style={backgroundColorBox}>
+                <lightning-layout-item padding="around-small" class="slds-size_1-of-2">
+                    {label.LBL_Caracteristics}
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout style={backgroundColorBox}>
+                <!--<lightning-layout-item padding="around-small" class="slds-size_1-of-3">
+                    <lightning-input type="checkbox" label={GoldFilterLabel} name="goldoption" onchange={checkGold}
+                        style="width:11vw;"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" class="slds-size_1-of-3">
+                    <lightning-input type="checkbox" label={silverFilterLabel} name="silverOptions"
+                        onchange={checkSilver} style="width:11vw;"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" class="slds-size_1-of-3">
+                    <lightning-input type="checkbox" label={VipFilterLabel} name="vipOptions" onchange={checkVip}
+                        style="width:11vw;"></lightning-input>
+                </lightning-layout-item>-->
+                <lightning-layout-item padding="around-small" class="slds-size_1-of-2" if:true={isBusourceSelected}>
+                <section id="caracteristic" class="slds-popover slds-popover_full-width collapsed">
+                    <div class="slds-popover__body">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="caracteristic" options={caracteristicOptions}
+                                    value={selectedCaracteristic} data-form="caracteristicOptions"
+                                    onchange={changeCaracteristic}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </fieldset>
+                    </div>
+                </section>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" class="slds-size_1-of-2" if:true={filterIsOpen}>
+                <section id="fieldSelect" class="slds-popover slds-popover_full-width collapsed">
+                    <div class="slds-popover__body">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <lightning-checkbox-group name="fieldSelect" options={fieldOptions}
+                                    value={selectedField} data-form="fieldOptions"
+                                    onchange={changeFieldSelect}>
+                                </lightning-checkbox-group>
+                            </div>
+                        </fieldset>
+                    </div>
+                </section>
+            </lightning-layout-item>
+            </lightning-layout>
+
+            <lightning-layout if:true={filterIsOpen}>
+                <!--<lightning-layout-item padding="around-small" class="slds-size_1-of-1">
+                    <lightning-dual-listbox id="fieldSelect" name="fieldSelect" source-label={label.LBL_Available}
+                        selected-label={label.LBL_Selected} options={fieldOptions} size="6"
+                        onchange={changeFieldSelect}>
+                    </lightning-dual-listbox>
+                </lightning-layout-item>-->
+            </lightning-layout>
+
+            <!--test dual selection-->
+            <div class="slds-col" style="display:none;">
+                <lightning-dual-listbox name="categoryMultiple" label="Choose Category"
+                    source-label="Available Category" selected-label="Selected Category"
+                    field-level-help="Choose the Category To filter" options={categoryOptions}
+                    onchange={handleMultipleCategory}></lightning-dual-listbox>
+            </div>
+            <!-- -->
+            <div style={heightTable} class="slds-scrollable slds-m-horizontal_x-small">
+                <table class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered"
+                    style={tableStyle}>
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="fixedHeader" scope="col">{reportNameLabel}</th>
+                            <th class="fixedHeader" scope="col">
+                                <center>{label.LBL_Navigate}</center>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={listOfReports} for:item="report">
+                            <tr class="slds-hint-parent" key={report.Id}>
+                                <td>{report.Name}</td>
+                                <td>
+                                    <center>
+                                        <a href={report.url} target="_Blank">
+                                            <lightning-icon icon-name="action:follow" alternative-text="open Report"
+                                                size="xx-small">
+                                            </lightning-icon>
+                                        </a>
+                                    </center>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+</template>

@@ -1,0 +1,1899 @@
+<template>
+  <lightning-spinner if:true={isLoading} size="small"></lightning-spinner>
+  <div if:true={betaWarning} class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert" style="background-image: none;">
+    <span class="slds-assistive-text">warning</span>
+    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"
+      title="Description of icon when needed">
+      <lightning-icon icon-name="utility:warning" alternative-text="warning" size="x-small" title="warning"></lightning-icon>
+    </span>
+    <h2>
+      The app is currently in BETA version, you might encounter some issues. 
+      report bugs in <a href="https://github.com/SoftRetail-git/negOptim-DailyReport/issues" target="_blank">Daily Report Repository Issues</a> to 
+      fix them quickly! If you don't have access, please contact administrator to get an invitation.
+    </h2>
+    <div class="slds-notify__close">
+      <button class="slds-button slds-button_icon slds-button_icon-small" title="Close" onclick={handleCloseBetaWarning}>
+        <lightning-icon icon-name="utility:close" alternative-text="close" size="x-small" title="close"></lightning-icon>
+        <span class="slds-assistive-text">{labels.LBL_Close}</span>
+      </button>
+    </div>
+  </div>
+  <!-- START OF CONTAINER -->
+  <div
+    class="main-container"
+    style="height: 100%"
+    onclick={handleCheckIfIclickedOutsideSearch}
+  >
+    <!-- START OF HEADER -->
+    <div
+      class={currentDateReportHead.classStyle}
+      style="margin-bottom: 10px"
+    > 
+      <div class="slds-col slds-size_2-of-3 slds-text-align_left">
+        <div class="slds-grid">
+          <div class="slds-col ">
+            <div class="con vm w100 g_nm" style={imageUrlIcon}></div>
+            <div class="g_nm vm" style="padding-left: 10px">
+              <div
+                class="fs16 pointer"
+                onclick={openReloadConfirmModel}
+                data-id={adminId}
+                style="font-weight: bold"
+              >
+                {labels.MSG_Welcome_Back}, {userName}
+              </div>
+              <div class="fs15 md_h">
+                {labels.MSG_Happy}
+              </div>
+              <div class="fs12 pointer md_sb h">{currentDate}</div>
+            </div>
+          </div>
+          <!-- <div class="slds-col slds-align-middle">{userNote}</div> -->
+        </div>
+      </div>
+      <div class="slds-col slds-size_1-of-3 b slds-text-align_right">
+        <div class="g_nm vm" if:false={isHoliday}>
+          <div class="g_nm vm" if:false={isWeekend}>
+            <div if:true={notAdmin} class="g_nm vm">
+              <div
+                if:true={disableNewTask}
+                class="g_nm pointer"
+                style="
+                  color: #0176d3;
+                  border: 1px solid #0176d3;
+                  line-height: 35px;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  border-radius: 5px;
+                  background: white;
+                "
+                onclick={saveAndAddNewTask}
+              >
+                {labels.LBL_BTN_Save_Add}
+              </div>
+              <div
+                if:true={enableSave}
+                class="g_nm pointer slds-m-left_small"
+                style="
+                  border: 1px solid #0176d3;
+                  color: white;
+                  background: #0176d3;
+                  line-height: 35px;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  border-radius: 5px;
+                "
+                onclick={saveTask}
+              >
+                {labels.LBL_Save_Task}
+              </div>
+              <div
+                if:false={disableNewTask}
+                class="g_nm pointer slds-m-left_small"
+                style="
+                  border: 1px solid #0176d3;
+                  color: white;
+                  background: #0176d3;
+                  line-height: 35px;
+                  padding-left: 20px;
+                  padding-right: 20px;
+                  border-radius: 5px;
+                "
+                onclick={addNewTask}
+              >
+                {labels.LBL_Add_Task}
+              </div>
+            <div  if:false={currentDateReportHead.Submitted__c} class="g_nm vm">
+              <div
+              class="g_nm pointer slds-m-left_small"
+              style="
+              border: 1px solid #10a13c;
+              color: white;
+              background: #31ad57;
+              line-height: 35px;
+              padding-left: 20px;
+              padding-right: 20px;
+              border-radius: 5px;
+              margin-top: -3px;
+            "
+              data-field="SubmitDay__c"
+              onclick={openSubmitDayModel}
+            >
+              {labels.LBL_Submit_Day}
+            </div>
+            </div>
+            <div if:true={currentDateReportHead.Submitted__c} class="g_nm vm">
+              <div
+              class="g_nm pointer slds-m-left_small"
+              style="border: 1px solid #808281;
+                    color: white;
+                    background: #a3a8a4;
+                    line-height: 35px;
+                    padding-left: 20px;
+                    padding-right: 20px;
+                    border-radius: 5px;
+                    margin-top: -3px;"
+            >
+              {labels.LBL_Submit_Day}
+            </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END OF HEADER -->
+    <!-- START OF BODY -->
+    <div class="fs0" style="margin: -5px">
+      <!-- START OF LEFT PANEL -->
+      <div class="g_nm vt fs14 w19 md_w21 m_w23 m_m_w25" style="padding: 5px">
+        <!-- <div class="g_nm vt fs14 w19 md_h " style="padding:5px;"> -->
+        <!-- START OF CALENDER -->
+        <div
+          class="round2x pr calendar-section"
+          style="background: white; margin-bottom: 10px"
+        >
+          <div
+            class="slds-grid slds-grid_vertical-align-center"
+            style="padding: 16px 20px 10px"
+          >
+            <div class="slds-col slds-col slds-size_9-of-12">
+              <div class="fs18 b">{currentDate}</div>
+            </div>
+            <div
+              class="slds-col slds-col slds-size_3-of-12 slds-text-align_right"
+              style="color: #0176d3"
+            >
+              <div
+                class="g_nm vm slds-m-right_xx-small pr pointer"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 5px;
+                  background: #0176d326;
+                "
+              >
+                <div
+                  style="
+                    position: absolute;
+                    top: 45%;
+                    left: 50%;
+                    translate: -50% -50% 0px;
+                  "
+                >
+                  <lightning-icon
+                    icon-name="utility:chevronleft"
+                    alternative-text="chevronleft"
+                    size="xx-small"
+                    title="chevronleft"
+                    class="slds-current-color"
+                  ></lightning-icon>
+                </div>
+                <div
+                  class="ov"
+                  style="background: transparent"
+                  data-id="calendar-prev"
+                  onclick={handleChangeMonth}
+                ></div>
+              </div>
+              <div
+                if:true={nextArrowDisabled}
+                class="g_nm vm pr pointer"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 5px;
+                  background: #0176d326;
+                "
+              >
+                <div
+                  style="
+                    position: absolute;
+                    top: 45%;
+                    left: 50%;
+                    translate: -50% -50% 0px;
+                  "
+                >
+                  <lightning-icon
+                    icon-name="utility:chevronright"
+                    alternative-text="chevronright"
+                    size="xx-small"
+                    title="chevronright"
+                    class="slds-current-color"
+                  ></lightning-icon>
+                </div>
+                <div
+                  class="ov"
+                  style="background: transparent"
+                  data-id="calendar-next"
+                  onclick={handleChangeMonth}
+                ></div>
+              </div>
+              <div
+                if:false={nextArrowDisabled}
+                class="g_nm vm pr"
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 5px;
+                  background: #0176d326;
+                "
+              >
+                <div
+                  style="
+                    position: absolute;
+                    top: 45%;
+                    left: 50%;
+                    translate: -50% -50% 0px;
+                  "
+                >
+                  <lightning-icon
+                    icon-name="utility:chevronright"
+                    alternative-text="chevronright"
+                    size="xx-small"
+                    title="chevronright"
+                    class="slds-current-color"
+                  ></lightning-icon>
+                </div>
+                <div
+                  class="ov"
+                  style="
+                    background: rgb(217, 235, 248, 0.7);
+                    border-radius: 5px;
+                  "
+                  data-id="calendar-next"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="calendar-body" style="min-height: 300px">
+            <div
+              class="calendar-weekdays fs0"
+              style="font-weight: 500; text-align: center"
+            >
+              <div class="w14 g_nm fs14">{labels.LBL_Monday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Tuesday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Wednesday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Thursday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Friday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Saturday}</div>
+              <div class="w14 g_nm fs14">{labels.LBL_Sunday}</div>
+            </div>
+            <div class="calendar-dates fs0">
+              <div
+                for:each={calenderDates}
+                for:item="calender"
+                for:index="index"
+                key={calender}
+                class="pr g_nm w14"
+                style="
+                  padding-top: 23px;
+                  padding-bottom: 23px;
+                  text-align: center;
+                "
+              >
+                <div class={calender.parentClasses}>
+                  <div class="cc fs14">{calender.nb}</div>
+                  <div
+                    class={calender.dotsClasses}
+                    style="
+                      width: 7px;
+                      height: 7px;
+                      border-radius: 50px;
+                      top: 33px;
+                      left: 50%;
+                      transform: translate(-50%, -50%);
+                    "
+                  ></div>
+                  <div
+                    for:each={calender.holidays}
+                    for:item="holiday"
+                    key={holiday}
+                    class={holiday.class}
+                    style={holiday.style}
+                  ></div>
+                </div>
+                <div
+                  class="ov"
+                  style="background: transparent"
+                  onclick={handleChangeDay}
+                  data-full={calender.full}
+                  data-nb={calender.nb}
+                  data-weekend={calender.weekend}
+                  data-holiday={calender.holiday}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END OF CALENDER -->
+        <!-- START OF STATISTICS -->
+        <div
+          class="slds-p-around_medium round2x categories-section"
+          style="background: white"
+        >
+          <div class="fs18 slds-p-bottom_small" style="font-weight: bold">
+            {labels.LBL_Categories}
+          </div>
+          <div
+            for:each={categories}
+            for:item="cat"
+            key={cat}
+            class="slds-wrap slds-grid slds-grid_vertical-align-center slds-p-bottom_xx-small slds-text-align_left"
+          >
+            <div class="slds-col slds-size_8-of-12">
+              <div class="g_nm vm" style={cat.color}></div>
+              <div class="g_nm vm slds-p-left_x-smal fs15 ft slds-p-left_small">
+                {cat.title}
+              </div>
+            </div>
+            <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+              <div
+                class="g_nm vm pr"
+                style="
+                  background: #0176d326;
+                  border-radius: 15px;
+                  width: 40px;
+                  height: 24px;
+                "
+              >
+                <span class="b fs14 cc" style="color: #0176d3"
+                  >{cat.total}</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- <div class="slds-col slds-align-middle">
+            <span if:true={currentDateReportHead.SubmitDate__c} class="slds-text-body_small slds-text-color_success" style="font-weight: bold;">Submitted Date: {currentDateReportHead.SubmitDate__c}</span>
+            <span if:false={currentDateReportHead.SubmitDate__c} class="slds-text-body_small slds-text-color_error" style="font-weight: bold;">Submitted Date: No Submit Date</span>
+          </div>
+          <div class="slds-col slds-align-middle">
+            <span class="slds-text-body_small" style="font-weight: bold;">Submit Points: {currentDateReportHead.Point__c}</span>
+          </div> -->
+        </div>
+        <!-- <div class="round2x pr body-weekend vt slds-p-horizontal_small slds-p-vertical_x-small slds-grid h50" style="background: white; overflow: hidden; margin-top: 10px;">
+          <div class="slds-align-middle "><span>Daily Report V0.1</span> - <span style="text-decoration: underline; color: blue;">What's new ?</span></div>
+        </div> -->
+        <!-- END OF STATISTICS -->
+      </div>
+      <!-- END OF LEFT PANEL -->
+      <!-- START OF DAILY REPORT AREA -->
+      <div
+        class="g_nm vt fs14 w81 md_w79 m_w77 m_m_w75 pr"
+        style="padding: 5px">
+        <!-- <div class="g_nm vt fs14 w81 md_w100 pr" style="padding:5px" > -->
+        <!-- START OF DETAILS TABLE -->
+        <div if:true={isHoliday}
+          class="round2x pr body-holiday vt slds-p-around_medium"
+          style="background: white; overflow: hidden">
+          <div
+            style="
+              border-bottom: 1px solid rgba(217, 217, 217, 0.4);
+              padding-bottom: 12px;
+              margin-bottom: 20px;
+            "
+          >
+            <div class="con vm w100 g_nm" style={imageUrlHolodays}></div>
+            <div class="g_nm fs14 vm" style="padding-left: 10px">
+              <div>
+                <div class="g_nm vm fs18 b">{holidayDate}</div>
+              </div>
+              <div class="fs12" style="margin-top: -5px">
+                {labels.LBL_Total}:
+                <div class="g_nm vm slds-p-left_xx-small">
+                  <div
+                    class="g_nm pr"
+                    style="
+                      width: 35px;
+                      height: 19px;
+                      border-radius: 15px;
+                      background: #d9ebf8;
+                      color: #0176d3;
+                      margin-top: 5px;
+                    "
+                  >
+                    <div
+                      class="b"
+                      style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        translate: -50% -50% 0px;
+                      "
+                    >
+                      {numberOfHolidays}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fs0" style="margin: -10px">
+            <div
+              for:each={holidaysInfo}
+              for:item="holidayInfo"
+              key={holidayInfo}
+              class="g_nm w25 fs14"
+              style="padding: 10px"
+            >
+              <div
+                style="
+                  padding: 15px;
+                  border-bottom: 2px solid #0176d3;
+                  background: white;
+                  border-radius: 5px;
+                  border-top: 1px solid rgba(128, 128, 128, 0.2);
+                  border-left: 1px solid rgba(128, 128, 128, 0.2);
+                  border-right: 1px solid rgba(128, 128, 128, 0.2);
+                "
+              >
+                <div class="l">
+                  <div
+                    class="g_nm ph15 fs10 b"
+                    style="
+                      color: #0176d3;
+                      background: #d9ebf8;
+                      border-radius: 50px;
+                      line-height: 20px;
+                      padding-left: 15px;
+                      padding-right: 15px;
+                    "
+                  >
+                    {holidayInfo.status}
+                  </div>
+                </div>
+                <div style="margin-top: 15px; text-align: left">
+                  <div class="b fs16">{holidayInfo.title}</div>
+                  <div class="fs12" style="color: #9ca2ab; margin-top: 2px">
+                    <div class="g_nm vm">
+                      <lightning-formatted-date-time
+                        value={holidayInfo.start}
+                      ></lightning-formatted-date-time>
+                    </div>
+                    <div
+                      class="g_nm vm"
+                      style="
+                        height: 1px;
+                        background: rgb(1, 118, 211);
+                        width: 10px;
+                        margin-left: 5px;
+                        margin-right: 5px;
+                      "
+                    ></div>
+                    <div class="g_nm vm">
+                      <lightning-formatted-date-time
+                        value={holidayInfo.end}
+                      ></lightning-formatted-date-time>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="mt25 fs12"
+                  style="color: #0176d3; margin-top: 25px; text-align: right"
+                >
+                  <div class="g_nm b">{holidayInfo.nb}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="fs0 slds-p-around_small"
+            style="background: #f0f1f3; border-radius: 5px; display: none"
+          >
+            <div class="fs14 w20 g_nm b">
+              <div>{labels.LBL_Title}</div>
+            </div>
+            <div class="fs14 w20 g_nm b">
+              <div>{labels.LBL_Start_Date}</div>
+            </div>
+            <div class="fs14 w20 g_nm b">
+              <div>{labels.LBL_End_Date}</div>
+            </div>
+            <div class="fs14 w20 g_nm b">
+              <div>{labels.LBL_Numbers_Of_Days}</div>
+            </div>
+            <div class="fs14 w20 g_nm b">
+              <div>{labels.LBL_Status}</div>
+            </div>
+          </div>
+
+          <div
+            for:each={holidaysInfo}
+            for:item="holidayInfo"
+            key={holidayInfo}
+            style="border-bottom: 1px solid rgb(217, 217, 217); display: none"
+          >
+            <div class="fs0 slds-p-around_small">
+              <div class="fs14 w20 g_nm">
+                <div>{holidayInfo.title}</div>
+              </div>
+              <div class="fs14 w20 g_nm">
+                <div>{holidayInfo.start}</div>
+              </div>
+              <div class="fs14 w20 g_nm">
+                <div>{holidayInfo.end}</div>
+              </div>
+              <div class="fs14 w20 g_nm">
+                <div>{holidayInfo.nb}</div>
+              </div>
+              <div class="fs14 w20 g_nm">
+                <div>{holidayInfo.status}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div if:false={isHoliday}>
+          <div
+            class="round2x pr body-weekend vt"
+            style="background: white; overflow: hidden"
+            if:true={isWeekend}
+          >
+            <div class="cc" style="width: 50%">
+              <div class="c">
+                <div class="con w25 sq g_nm" style={imageUrlWeekend}></div>
+              </div>
+              <div class="fs23 b c" style="padding-top: 10px">
+                {labels.LBL_Enjoy_Weekend}
+              </div>
+            </div>
+          </div>
+          <!-- START OF REPORT HEADER -->
+          <div if:false={isWeekend}>
+            <div
+              class="header-two slds-p-bottom_x-small round2x slds-p-horizontal_small pr"
+              style="background: white; margin-bottom: 10px"
+            >
+              <!-- START GRID -->
+              <div class="slds-grid">
+                <div class="slds-col slds-size_11-of-12">
+                  <div
+                    class="g_nm slds-m-right_medium vt search-users"
+                    style="width: 200px"
+                    if:false={isMember}
+                  >
+                    <div class="slds-form-element__control">
+                      <lightning-input
+                      class="searchInput"
+                      label={labels.LBL_User_Search}
+                      type="search"
+                      onclick={handleFilterSearchUser}
+                      onchange={handleFilterSearchUser}
+                      value={selectedSearchValue}
+                    >
+                      <!-- <lightning-input
+                        label={labels.LBL_User_Search}
+                        type="search"
+                        onchange={handleFilterSearchUser}
+                        value={selectedSearchValue}
+                        onfocus={handleFilterSearchUser}
+                      > -->
+                      </lightning-input>
+                      <div
+                        if:true={showSearch}
+                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                      >
+                        <ul
+                          class="slds-listbox slds-listbox_vertical"
+                          role="presentation"
+                        >
+                          <template for:each={searchResults} for:item="users">
+                            <li
+                              key={users.Id}
+                              data-id={users.Id}
+                              data-name={users.Name}
+                              role="presentation"
+                              onclick={handleSelectUserAfterSearch}
+                              class="slds-listbox__item"
+                            >
+                              <div
+                                class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                role="option"
+                                data-id={users.Id}
+                                data-name={users.Name}
+                              >
+                                <span
+                                  class="slds-media__body"
+                                  data-id={users.Id}
+                                  data-name={users.Name}
+                                >
+                                  <span
+                                    class="slds-truncate"
+                                    data-id={users.Id}
+                                    data-name={users.Name}
+                                  >
+                                    {users.Name}
+                                  </span>
+                                </span>
+                              </div>
+                            </li>
+                          </template>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="g_nm slds-m-right_medium vt" style="width: 130px">
+                    <div style="font-size: 12px; padding-top: 0.4rem">
+                      {fieldsLabels.CheckIn}
+                    </div>
+                    <lightning-input
+                      type="time"
+                      name="CheckInInput"
+                      value={currentDateReportHead.Check_In__c}
+                      data-field="Check_In__c"
+                      onchange={inputValueChangedHead}
+                      variant="label-hidden"
+                      class="inp-check-in"
+                      disabled={readOnly}
+                    >
+                    </lightning-input>
+                  </div>
+                  <div class="g_nm slds-m-right_medium vt" style="width: 130px">
+                    <div style="font-size: 12px; padding-top: 0.4rem">
+                      {fieldsLabels.CheckOut}
+                    </div>
+                    <lightning-input
+                      type="time"
+                      name="CheckInInput"
+                      value={currentDateReportHead.Check_Out__c}
+                      data-field="Check_Out__c"
+                      onchange={inputValueChangedHead}
+                      variant="label-hidden"
+                      class="inp-check-out"
+                      disabled={readOnly}
+                    >
+                    </lightning-input>
+                  </div>
+                  <div class="g_nm slds-m-right_medium vt">
+                    <div style="font-size: 12px; padding-top: 0.4rem">
+                      {fieldsLabels.Break}
+                    </div>
+                    <lightning-combobox
+                      class="resetBreak"
+                      name="Break"
+                      options={breakOptions}
+                      value={currentDateReportHead.BreakPicklistValue}
+                      dropdown-alignment="auto"
+                      data-field="Break__c"
+                      data-fieldtype="BreakCombo"
+                      onchange={inputValueChangedHead}
+                      variant="label-hidden"
+                      disabled={readOnly}
+                    >
+                    </lightning-combobox>
+                  </div>
+                  <div class="g_nm slds-m-right_medium vt">
+                    <div if:true={moreThanOneHourBreak}>
+                      <div style="font-size: 12px; padding-top: 0.4rem">
+                        {labels.LBL_Add_Hours}
+                      </div>
+                      <lightning-input
+                        type="number"
+                        name="BreakInput"
+                        value={currentDateReportHead.Break__c}
+                        data-field="Break__c"
+                        onchange={inputValueChangedHead}
+                        placeholder="Specify break time here"
+                        min="1.25"
+                        max="3"
+                        step="0.25"
+                        variant="label-hidden"
+                        disabled={readOnly}
+                      >
+                      </lightning-input>
+                    </div>
+                  </div>
+                  <div class="g_nm slds-m-right_medium vt">
+                    <!-- START  -->
+                    <!-- START BREAK JUSTIFICATION  -->
+                    <div lwc:if={showJustificationField}>
+                      <div style="font-size: 12px; padding-top: 0.4rem">
+                        {fieldsLabels.BreakJustification}
+                      </div>
+                      <lightning-input
+                        type="text"
+                        placeholder="Enter text here"
+                        name="break_justification"
+                        onchange={inputValueChangedHead}
+                        maxlength="128"
+                        variant="label-hidden"
+                        data-field="Break_Justification__c"
+                        disabled={readOnly}
+                        aria-describedby="break_justification"
+                        value={currentDateReportHead.Break_Justification__c}
+                      >
+                      </lightning-input>
+                    </div>
+                  </div>
+                  <!-- END  BREAK JUSTIFICATION  -->
+                  <!-- END  -->
+                  <div class="g_nm slds-m-right_medium vt">
+                    <div
+                      style="
+                        font-size: 12px;
+                        padding-top: 0.4rem;
+                        color: transparent;
+                      "
+                    >
+                    {labels.LBL_Status}
+                    </div>
+                    <div class="buttons fs0">
+                      <div class="g_nm fs14">
+                        <input
+                          class="cust-check"
+                          onchange={inputValueChangedHead}
+                          data-field="Remotely__c"
+                          disabled={readOnly}
+                          label={fieldsLabels.Remotely}
+                          type="checkbox"
+                          name="gender"
+                          value="Remotely__c"
+                          style="
+                            border: 1px solid rgb(0, 0, 0, 0.5);
+                            border-radius: 5px 0 0 5px;
+                          "
+                          checked={currentDateReportHead.Remotely__c}
+                        />
+                      </div>
+                      <div class="g_nm fs14">
+                        <input
+                          class="cust-check"
+                          onchange={inputValueChangedHead}
+                          data-field="IsSick__c"
+                          disabled={readOnly}
+                          label={fieldsLabels.Sick}
+                          type="checkbox"
+                          name="gender"
+                          value="IsSick__c"
+                          style="border: 1px solid rgb(0, 0, 0, 0.5)"
+                          checked={currentDateReportHead.IsSick__c}
+                        />
+                      </div>
+                      <div class="g_nm fs14">
+                        <input
+                          class="cust-check"
+                          onchange={inputValueChangedHead}
+                          data-field="IsOff__c"
+                          disabled={readOnly}
+                          label={fieldsLabels.Off}
+                          type="checkbox"
+                          name="gender"
+                          value="IsOff__c"
+                          style="
+                            border: 1px solid rgb(0, 0, 0, 0.5);
+                            border-radius: 0 5px 5px 0;
+                          "
+                          checked={currentDateReportHead.IsOff__c}
+                        />
+                      </div>
+                      <!-- START  EXTRA TIME BUTTON-->
+                      <div class="g_nm fs14 slds-m-left_medium">
+                        <div class="slds-form-element">
+                          <label class="slds-checkbox_toggle slds-grid">
+                            <span
+                              class="slds-form-element__label slds-m-bottom_none fs14"
+                              >{fieldsLabels.ExtraTime}</span
+                            >
+                            <input
+                              type="checkbox"
+                              name="extra_time"
+                              onchange={inputValueChangedHead}
+                              data-field="Extra_Time__c"
+                              disabled={readOnly}
+                              value="Extra_Time__c"
+                              aria-describedby="extra_time"
+                              checked={currentDateReportHead.Extra_Time__c}
+                            />
+                            <span
+                              id="extra_time"
+                              class="slds-checkbox_faux_container"
+                            >
+                              <span class="slds-checkbox_faux"></span>
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                      <!-- END  EXTRA TIME BUTTON -->
+                    </div>
+                  </div>
+                </div>
+                <!-- START TOTAL HOURS  -->
+                <!-- <div class="g_nm slds-m-right_medium vt b ov" style="left: auto;top:7px;right:10px"> -->
+                <div class="slds-col">
+                  <div
+                    class="g_nm slds-m-right_medium vt b"
+                    style="left: auto; top: 7px; right: 10px"
+                  >
+                    <div
+                      class="fs14"
+                      style="padding-top: 0.4rem; text-align: center"
+                    >
+                      {fieldsLabels.TotalHours}
+                    </div>
+                    <div style="text-align: center">{currentTotalHours}</div>
+                  </div>
+                </div>
+                <!-- </div> -->
+                <!-- END TOTAL HOURS -->
+                <!-- START  GRID -->
+              </div>
+              <!-- END  GRID -->
+            </div>
+            <div
+              class="round2x tasks-body pr"
+              style="background: white; overflow-y: scroll; width: 100%"
+            >
+              <div class="cc" style="width: 50%" if:true={noTasks}>
+                <div class="c">
+                  <div class="con w25 sq g_nm" style={imageUrlNoTasks}></div>
+                </div>
+                <div class="fs23 b c" style="padding-top: 10px">
+                  {labels.LBL_No_Tasks}
+                </div>
+              </div>
+              <div if:false={noTasks}>
+                <div
+                  class="slds-p-horizontal_xx-small slds-p-vertical_xx-small slds-m-bottom_medium tasks-header"
+                  style="background: #f0f1f3; overflow: hidden"
+                >
+                  <!-- START DETAIL LABELS -->
+                  <div class="fs0">
+                    <div class="g_nm w14 fs16 vm p5 b">
+                      <div>{fieldsLabels.Name}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <!-- START AK  -->
+                    <div class="g_nm fs16 vm p5 b w8">
+                      <div>{fieldsLabels.StartTime}</div>
+                    </div>
+                    <!-- END AK  -->
+                    <div class="g_nm fs16 vm p5 b w8">
+                      <div>{fieldsLabels.Time}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <!-- START AK  -->
+                    <div class="g_nm fs16 vm p5 b w8">
+                      <div>{fieldsLabels.EndTime}</div>
+                    </div>
+                    <!-- END AK  -->
+                    <div class="g_nm w10 fs16 vm p5 b">
+                      <div>{fieldsLabels.Status}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <div class="g_nm w10 fs16 vm p5 b">
+                      <div>{fieldsLabels.Type}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <div class="g_nm w10 fs16 vm p5 b">
+                      <div>{fieldsLabels.Client}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <div class="g_nm w10 fs16 vm p5 b">
+                      <div>{fieldsLabels.Ticket}<abbr title="required" class="slds-required">*</abbr></div>
+                    </div>
+                    <div class="g_nm fs16 vm p5 b" style="width: 13%">
+                      <div>{fieldsLabels.Description}</div>
+                    </div>
+                    <div class="g_nm fs16 vm p5 b w9">
+                      <div class="slds-text-align_center">{labels.LBL_Table_Actions}</div>
+                    </div>
+                  </div>
+                  <!-- END DETAIL LABELS -->
+                </div>
+                <!-- START DETAIL TABLE -->
+                <template
+                  for:each={currentDateReports}
+                  for:item="item"
+                  for:index="index"
+                >
+                  <template if:true={item.inline}>
+                    <div key={item.Id} class="slds-p-horizontal_x-small">
+                      <div
+                        class="slds-m-bottom_xx-small"
+                        style="
+                          border-radius: 5px;
+                          border: 1px solid rgb(128, 128, 128, 0.4);
+                        "
+                      >
+                        <!-- START HIDDEN EDIT FORM FOR EACH DETAIL -->
+                        <div class="fs0">
+                          <div class="g_nm fs14 vm p5 w14">
+                            <div>
+                              <lightning-input
+                                name="Name"
+                                value={item.Name}
+                                data-field="Name"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-input>
+                            </div>
+                          </div>
+                          <!-- AK START -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>
+                              <lightning-input
+                                type="time"
+                                name="StartTimeInput"
+                                value={item.Start_Time__c}
+                                data-field="Start_Time__c"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                class="inp-check-in"
+                                disabled={readOnly}
+                              >
+                              </lightning-input>
+                            </div>
+                          </div>
+                          <!-- AK END -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>
+                              <lightning-combobox
+                                name="Duration"
+                                value={item.Time__c}
+                                options={timeOptions}
+                                dropdown-alignment="auto"
+                                data-field="Time__c"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-combobox>
+                            </div>
+                          </div>
+                          <!-- AK START -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>
+                              <div class="g_nm slds-m-right_medium vt">
+                                {calculatedEndTime}
+                              </div>
+                            </div>
+                          </div>
+                          <!-- AK END -->
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>
+                              <lightning-combobox
+                                name="Status"
+                                value={item.Status__c}
+                                options={allDailyReportDetailPicklistValues.data.picklistFieldValues.Status__c.values}
+                                dropdown-alignment="auto"
+                                data-field="Status__c"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-combobox>
+                            </div>
+                          </div>
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>
+                              <lightning-combobox
+                                name="Dev Related"
+                                value={item.Task_Type__c}
+                                options={allDailyReportDetailPicklistValues.data.picklistFieldValues.Task_Type__c.values}
+                                dropdown-alignment="auto"
+                                data-field="Task_Type__c"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-combobox>
+                            </div>
+                          </div>
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>
+                              <lightning-combobox
+                                name="Client"
+                                value={item.Client__c}
+                                class="inp-client"
+                                options={clientPicklistValues}
+                                dropdown-alignment="auto"
+                                data-field="Client__c"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-combobox>
+                            </div>
+                          </div>
+                          <div class="g_nm fs14 vm p5 w10">
+                            <div>
+                              <lightning-input
+                                name="Ticket"
+                                value={item.ticketId__c}
+                                data-field="ticketId__c"
+                                data-inputgroup="dailyReportDetailGroup"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                                required
+                              >
+                              </lightning-input>
+                            </div>
+                          </div>
+                          <div class="g_nm fs14 vm p5" style="width: 13%">
+                            <div>
+                              <lightning-textarea
+                                name="Description"
+                                value={item.Description__c}
+                                data-field="Description__c"
+                                onchange={inputValueChanged}
+                                variant="label-hidden"
+                              >
+                              </lightning-textarea>
+                            </div>
+                          </div>
+                          <div class="g_nm fs16 vm p5 w9">
+                            <!-- START AK -->
+                            <!-- <div class="slds-text-align_right"> -->
+                            <div class="slds-text-align_right">
+                              <!-- END AK -->
+                              <div
+                                class="g_nm vm pointer pr slds-m_xx-small"
+                                style="
+                                
+                                  width: 35px;
+                                  height: 35px;
+                                  background: #d9ebf8;
+                                  color: #0176d3;
+                                  border-radius: 5px;
+                                "
+                              >
+                                <div
+                                  style="
+                                    position: absolute;
+                                    top: 45%;
+                                    left: 50%;
+                                    translate: -50% -50% 0px;
+                                  "
+                                >
+                                  <lightning-icon
+                                    icon-name="utility:check"
+                                    alternative-text="check"
+                                    size="x-small"
+                                    class="slds-current-color"
+                                    title="check"
+                                  ></lightning-icon>
+                                </div>
+                                <div
+                                  class="ov"
+                                  style="background: transparent"
+                                  onclick={saveTask}
+                                ></div>
+                              </div>
+                              <div
+                                class="g_nm vm pointer pr slds-m_xx-small"
+                                style="
+                                  
+                                  width: 35px;
+                                  height: 35px;
+                                  background: rgb(255, 102, 147, 0.1);
+                                  color: #ff6693;
+                                  border-radius: 5px;
+                                "
+                              >
+                                <div
+                                  style="
+                                    position: absolute;
+                                    top: 45%;
+                                    left: 50%;
+                                    translate: -50% -50% 0px;
+                                  "
+                                >
+                                  <lightning-icon
+                                    icon-name="utility:close"
+                                    alternative-text="close"
+                                    size="x-small"
+                                    class="slds-current-color"
+                                    title="close"
+                                  ></lightning-icon>
+                                </div>
+                                <div
+                                  class="ov"
+                                  style="background: transparent"
+                                  onclick={handleDetailCancelBtn}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END HIDDEN EDIT FORM FOR EACH DETAIL -->
+                      </div>
+                    </div>
+                  </template>
+                  <!-- START DETAIL VALUES -->
+                  <template if:false={item.inline}>
+                    <div key={item.Id} class="slds-p-horizontal_x-small">
+                      <div
+                        class="slds-m-bottom_x-small"
+                        style="
+                          border-radius: 5px;
+                          border: 1px solid rgb(128, 128, 128, 0.4);
+                        "
+                      >
+                        <div class="fs0">
+                          <div
+                            class="g_nm w14 fs14 vm p5"
+                            style="overflow-wrap: break-word"
+                          >
+                            <div>{item.Name}</div>
+                          </div>
+                          <!-- START AK  -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>{item.Locale_Start_Time__c}</div>
+                          </div>
+                          <!-- END AK -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>{item.Locale_Time__c}</div>
+                          </div>
+                          <!-- START AK  -->
+                          <div class="g_nm fs14 vm p5 w8">
+                            <div>{item.Locale_End_Time__c}</div>
+                          </div>
+                          <!-- END AK -->
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>{item.Status__c}</div>
+                          </div>
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>{item.Task_Type__c}</div>
+                          </div>
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>{item.Client__c}</div>
+                          </div>
+                          <div class="g_nm w10 fs14 vm p5">
+                            <div>{item.ticketId__c}</div>
+                          </div>
+                          <div class="g_nm fs14 vm p5" style="width: 13%">
+                            <div>
+                              <textarea
+                                rows="1"
+                                cols="1"
+                                style="width: 100%; border: none"
+                                readonly>
+                                {item.Description__c}</textarea>
+                            </div>
+                          </div>
+                          <div class="g_nm fs16 vm p5 w9">
+                            <div if:false={editOnly}>
+                              <!-- START AK -->
+                              <!-- <div class="slds-text-align_right" if:true={notAdmin}> -->
+                              <div class="slds-text-align_right">
+                                <!-- END AK -->
+                                <div if:true={notAdmin}
+                                  class="g_nm vm pointer pr slds-m_xx-small"
+                                  style="
+                                  
+                                    width: 35px;
+                                    height: 35px;
+                                    background: #d9ebf8;
+                                    color: #0176d3;
+                                    border-radius: 5px;
+                                  "
+                                >
+                                  <div
+                                    style="
+                                      position: absolute;
+                                      top: 45%;
+                                      left: 50%;
+                                      translate: -50% -50% 0px;
+                                    "
+                                  >
+                                    <lightning-icon
+                                      icon-name="utility:edit"
+                                      alternative-text="edit"
+                                      size="x-small"
+                                      title="edit"
+                                      class="slds-current-color"
+                                      style="top: -2px"
+                                    ></lightning-icon>
+                                  </div>
+                                  <div
+                                    class="ov"
+                                    style="background: transparent"
+                                    data-action="edit"
+                                    data-id={item.Id}
+                                    data-index={index}
+                                    onclick={editDailyReportDetail}
+                                  ></div>
+                                </div>
+                                <div if:true={notAdmin}
+                                  class="g_nm vm pointer pr slds-m_xx-small"
+                                  style="
+                                  
+                                    width: 35px;
+                                    height: 35px;
+                                    background: rgb(255, 102, 147, 0.1);
+                                    color: #ff6693;
+                                    border-radius: 5px;
+                                  "
+                                >
+                                  <div
+                                    style="
+                                      position: absolute;
+                                      top: 45%;
+                                      left: 50%;
+                                      translate: -50% -50% 0px;
+                                    "
+                                  >
+                                    <lightning-icon
+                                      icon-name="utility:delete"
+                                      alternative-text="delete"
+                                      size="x-small"
+                                      title="delete"
+                                      class="slds-current-color"
+                                      style="top: -2px"
+                                    ></lightning-icon>
+                                  </div>
+                                  <div
+                                    class="ov"
+                                    style="background: transparent"
+                                    data-action="delete"
+                                    data-id={item.Id}
+                                    data-index={index}
+                                    onclick={handleDetailDeleteBtn}
+                                  ></div>
+                                </div>
+                                <div
+                                  class="g_nm vm pointer pr slds-m_xx-small"
+                                  style="
+                                    
+                                    width: 35px;
+                                    height: 35px;
+                                    background: rgb(144, 238, 144, 0.1);
+                                    color: #90ee90;
+                                    border-radius: 5px;
+                                  "
+                                  lwc:if={showCloneBtn}
+                                >
+                                  <div
+                                    style="
+                                      position: absolute;
+                                      top: 45%;
+                                      left: 50%;
+                                      translate: -50% -50% 0px;
+                                    "
+                                  >
+                                    <lightning-icon
+                                      icon-name="utility:copy"
+                                      alternative-text="clone"
+                                      size="x-small"
+                                      title="clone"
+                                      class="slds-current-color"
+                                      style="top: -2px"
+                                    ></lightning-icon>
+                                  </div>
+                                  <div
+                                    class="ov"
+                                    style="background: transparent"
+                                    data-action="delete"
+                                    data-id={item.Id}
+                                    data-index={index}
+                                    onclick={toggleCloneDatePicker}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div if:true={editOnly}>
+                              <div class="slds-text-align_right">
+                                <div
+                                  class="g_nm vm pr slds-m_x-small"
+                                  style="
+                                    width: 35px;
+                                    height: 35px;
+                                    background: #d9ebf8;
+                                    color: rgb(1, 118, 211, 0.5);
+                                    border-radius: 5px;
+                                  "
+                                >
+                                  <div
+                                    style="
+                                      position: absolute;
+                                      top: 45%;
+                                      left: 50%;
+                                      translate: -50% -50% 0px;
+                                    "
+                                  >
+                                    <lightning-icon
+                                      icon-name="utility:edit"
+                                      alternative-text="edit"
+                                      size="x-small"
+                                      title="edit"
+                                      class="slds-current-color"
+                                      style="top: -2px"
+                                    ></lightning-icon>
+                                  </div>
+                                  <div
+                                    class="ov"
+                                    style="background: transparent"
+                                    data-action="edit"
+                                    data-id={item.Id}
+                                    data-index={index}
+                                  ></div>
+                                </div>
+                                <div
+                                  class="g_nm vm pr slds-m_xx-small"
+                                  style="
+                                    width: 35px;
+                                    height: 35px;
+                                    background: rgb(255, 102, 147, 0.1);
+                                    color: rgb(255, 112, 154, 0.5);
+                                    border-radius: 5px;
+                                  "
+                                >
+                                  <div
+                                    style="
+                                      position: absolute;
+                                      top: 45%;
+                                      left: 50%;
+                                      translate: -50% -50% 0px;
+                                    "
+                                  >
+                                    <lightning-icon
+                                      icon-name="utility:delete"
+                                      alternative-text="delete"
+                                      size="x-small"
+                                      title="delete"
+                                      class="slds-current-color"
+                                      style="top: -2px"
+                                    ></lightning-icon>
+                                  </div>
+                                  <div
+                                    class="ov"
+                                    style="background: transparent"
+                                    data-action="delete"
+                                    data-id={item.Id}
+                                    data-index={index}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <!-- END DETAIL VALUES -->
+                </template>
+                <!-- START DETAIL TABLE -->
+              </div>
+            </div>
+            <!-- END OF REPORT HEADER -->
+            <!-- <div class="round2x pr body-weekend vt slds-p-horizontal_small slds-p-vertical_x-small slds-grid slds-grid_align-spread h50" style="background: white; overflow: hidden; margin-top: 10px;">
+              <div class="slds-col slds-align-middle">Submitted Date:
+                <span if:true={currentDateReportHead.SubmitDate__c} style="font-weight: bold;"> {currentDateReportHead.SubmitDate__c}</span>
+                <span if:false={currentDateReportHead.SubmitDate__c} style="font-weight: bold;"> No Submit Date</span>
+              </div>
+              <div class="slds-col slds-align-middle">{userNote}</div>
+              <div if:false={currentDateReportHead.Submitted__c} class="slds-col">
+                <div
+                class="g_nm pointer slds-m-left_small"
+                style="
+                border: 1px solid #10a13c;
+                color: white;
+                background: #31ad57;
+                line-height: 35px;
+                padding-left: 20px;
+                padding-right: 20px;
+                border-radius: 5px;
+              "
+                data-field="SubmitDay__c"
+                onclick={openSubmitDayModel}
+              >
+                Submit Day
+              </div>
+              </div>
+              <div if:true={currentDateReportHead.Submitted__c} class="slds-col">
+                <div
+                class="g_nm pointer slds-m-left_small"
+                style="border: 1px solid #808281;
+                      color: white;
+                      background: #a3a8a4;
+                      line-height: 35px;
+                      padding-left: 20px;
+                      padding-right: 20px;
+                      border-radius: 5px;"
+              >
+                Submit Day
+              </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <!-- END OF DETAILS TABLE -->
+        <!--test Calendar responsive-->
+        <!-- <div if:false={showCalendar} class="ov pr pointer h md_sb" style="background:#0176D3;width:60px;height:60px;border-radius:50%;color:white;top: auto;left:auto;right:45px;bottom:25px" onclick={handleShowCalendar}>
+                <div  style="position: absolute;top: 50%;left: 50%;translate: -50% -50% 0px;">
+                    <lightning-icon icon-name='utility:date_input' alternative-text='date_input' size='small' title='date_input' class="slds-current-color "></lightning-icon>
+                </div>
+                <div class="ov" style="background:transparent"  ></div>
+            </div>
+
+            <div if:true={showCalendar} class="ov  h md_sb" style="border-radius:5px;top: auto;left:auto;right:45px;bottom:20px;width:320px;position:fixed">
+                <div class="round2x slds-m-bottom_small pr " style="background:white;box-shadow: 0 0 30px 0 rgba(82, 63, 105, 0.2)">
+                    <div class="slds-grid slds-p-horizontal_small slds-p-vertical_x-small slds-grid_vertical-align-center slds-wrap " style="border-bottom:1px solid rgb(217, 217, 217);">
+                        <div  class="slds-col slds-size_1-of-2 slds-text-align_left b fs18" >
+                            My Calendar
+                        </div>
+                        <div class="slds-col slds-size_1-of-2  b slds-text-align_right" >
+                            <div class="g_nm pointer" style="width:30px;height:30px;border-radius:50%;background:#FFEFF4;position:relative;top:2px;color:#FF6693" onclick={handleCloseCalendar}>
+                                <div style="position: absolute;top: 45%;left: 50%;translate: -50% -50% 0px;">
+                                    <lightning-icon icon-name='utility:close' alternative-text='close'  size='x-small' class="slds-current-color " title='close' ></lightning-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-grid_vertical-align-center" style="padding:20px 20px 15px;">
+                        <div class="slds-col slds-col slds-size_9-of-12" >
+                            <div class="fs18 b ">{currentDate}</div>
+                        </div>
+                        <div class="slds-col slds-col slds-size_3-of-12 slds-text-align_right" style="color:#0176D3;" >
+                            <div class="g_nm vm slds-m-right_xx-small pr pointer "  style="width:30px;height:30px;border-radius:5px;background:#0176D326" >
+                                <div style="position: absolute;top: 45%;left: 50%;translate: -50% -50% 0px;">
+                                    <lightning-icon icon-name='utility:chevronleft' alternative-text='chevronleft' size='xx-small' title='chevronleft' class="slds-current-color " ></lightning-icon>
+                                </div>
+                                <div class="ov" style="background:transparent" data-id="calendar-prev"  onclick={handleChangeMonth}></div>
+                            </div>
+                            <div if:true={nextArrowDisabled} class="g_nm vm pr pointer "  style="width:30px;height:30px;border-radius:5px;background:#0176D326" >
+                                <div style="position: absolute;top: 45%;left: 50%;translate: -50% -50% 0px;">
+                                    <lightning-icon icon-name='utility:chevronright' alternative-text='chevronright' size='xx-small' title='chevronright' class="slds-current-color " ></lightning-icon>
+                                </div>
+                                <div class="ov" style="background:transparent" data-id="calendar-next"  onclick={handleChangeMonth}></div>
+                            </div>
+                            <div if:false={nextArrowDisabled} class="g_nm vm pr "  style="width:30px;height:30px;border-radius:5px;background:#0176D326" >
+                                <div style="position: absolute;top: 45%;left: 50%;translate: -50% -50% 0px;">
+                                    <lightning-icon icon-name='utility:chevronright' alternative-text='chevronright' size='xx-small' title='chevronright' class="slds-current-color " ></lightning-icon>
+                                </div>
+                                <div class="ov" style="background:rgb(217,235,248,.7);border-radius:5px;" data-id="calendar-next" ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calendar-body"> 
+                        <div class="calendar-weekdays fs0" style="font-weight: 500;text-align:center">
+                            <div class="w14 g_nm fs14">Sun</div>
+                            <div class="w14 g_nm fs14">Mon</div>
+                            <div class="w14 g_nm fs14">Tue</div>
+                            <div class="w14 g_nm fs14">Wed</div>
+                            <div class="w14 g_nm fs14">Thu</div>
+                            <div class="w14 g_nm fs14">Fri</div>
+                            <div class="w14 g_nm fs14">Sat</div>
+                        </div>
+                        <div class=" calendar-dates fs0" >
+                            <div for:each={calenderDates} for:item="calender" for:index="index" key={calender}   class="pr g_nm w14" style="padding-top:20px;padding-bottom:20px;text-align:center;">
+                                <div class={calender.c1} style="width:40px;height:40px;border-radius:50px;top: 50%;left: 50%;transform: translate(-50%, -50%);" >
+                                    <div class="cc fs14" >{calender.nb}</div>
+                                    <div class={calender.c2} style="width: 8px; height: 8px;border-radius:50px;top:33px;left: 50%;transform: translate(-50%, -50%);"></div>
+                                </div>
+                                <div class="ov" style="background:transparent" onclick={handleChangeDay} data-full={calender.full} data-nb={calender.nb} data-weekend={calender.week} data-open={calender.openDates}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-p-horizontal_small slds-p-vertical_x-small" style="border-top:1px solid rgb(217, 217, 217)">
+                        <div class="g_nm cw" style="background:#FF6693;padding-left:8px;padding-right:8px;line-height:24px;border-radius:5px;margin-right:5px;margin-bottom:5px;font-size:12px;color:white">Missing Task</div>
+                        <div class="g_nm cw" style="background:#2EDC7F;padding-left:8px;padding-right:8px;line-height:24px;border-radius:5px;margin-right:5px;margin-bottom:5px;font-size:12px;color:white">Remotely</div>
+                        <div class="g_nm cw" style="background:#438EF5;padding-left:8px;padding-right:8px;line-height:24px;border-radius:5px;margin-right:5px;margin-bottom:5px;font-size:12px;color:white">Day Off</div>
+                        <div class="g_nm cw" style="background:#AE39F4;padding-left:8px;padding-right:8px;line-height:24px;border-radius:5px;margin-right:5px;margin-bottom:5px;font-size:12px;color:white">Sick</div>
+                        <div class="g_nm cw" style="background:#F58948;padding-left:8px;padding-right:8px;line-height:24px;border-radius:5px;margin-right:5px;margin-bottom:5px;font-size:12px;color:white">Weekend</div>
+                    </div>
+                </div>
+            </div> -->
+        <!--test Calendar responsive-->
+      </div>
+      <!-- END OF DAILY REPORT AREA -->
+      <div if:false={isHoliday}>
+        <div if:false={isWeekend} class="slds-p-horizontal_small slds-p-vertical_x-small round2x" style="background: white; margin: 5px">
+          <div class="slds-grid slds-grid_vertical-align-center slds-col slds-align-middle">
+            <div class="slds-size_6-of-7">
+              <span class="slds-text-body_small" style="font-weight: bold;">{labels.LBL_Total_Submit_Points}: {totalSubmitPoints}</span>
+            </div>
+            <div class="slds-size_1-of-7">
+              <div>
+                <span if:true={currentDateReportHead.SubmitDate__c} class="slds-text-body_small slds-text-color_success" style="font-weight: bold;">{labels.LBL_Submitted_Date}: {currentDateReportHead.SubmitDate__c}</span>
+                <span if:false={currentDateReportHead.SubmitDate__c} class="slds-text-body_small slds-text-color_error" style="font-weight: bold;">{labels.LBL_No_Submit_Date}</span>
+              </div>
+              <div>
+                <span class="slds-text-body_small" style="font-weight: bold;">{labels.LBL_Submit_Points}: {currentDateReportHead.Point__c}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END OF BODY -->
+    <!-- START CONFIRM CANCEL DETAIL EDIT MODAL -->
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="cancel_edit_detail_confirm"
+      class="slds-modal slds-fade-in-open"
+      lwc:if={showDetailCancelConfirmModal}
+    >
+      <div class="slds-modal__container">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+        >
+          <svg
+            class="slds-button__icon slds-button__icon_large"
+            aria-hidden="true"
+          >
+            <use
+              xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+            ></use>
+          </svg>
+          <span class="slds-assistive-text">{labels.LBL_Cancel_And_Close}</span>
+        </button>
+        <div class="slds-modal__header">
+          <h1
+            id="cancel_edit_detail_confirm_header"
+            class="slds-modal__title slds-hyphenate"
+          >
+          {labels.LBL_Cancel_Changes}
+          </h1>
+        </div>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="cancel_edit_detail_confirm_content"
+        >
+          <p>{labels.MSG_Changes_Lost}</p>
+        </div>
+        <div class="slds-modal__footer">
+          <button
+            class="slds-button slds-button_neutral"
+            aria-label="Cancel and close"
+            onclick={handleModalCancelBtn}
+          >
+          {labels.LBL_No_Keep}
+          </button>
+          <button
+            class="slds-button slds-button_destructive"
+            onclick={cancelTask}
+          >
+          {labels.LBL_Yes_Cancel}
+          </button>
+        </div>
+      </div>
+    </section>
+    <div
+      class="slds-backdrop slds-backdrop_open"
+      role="presentation"
+      lwc:if={showDetailCancelConfirmModal}
+    ></div>
+    <!-- END CONFIRM CANCEL DETAIL EDIT MODAL -->
+    <!-- START CONFIRM DELETE DETAIL MODAL -->
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="delete_detail_confirm"
+      class="slds-modal slds-fade-in-open"
+      lwc:if={showDetailDeleteConfirmModal}
+    >
+      <div class="slds-modal__container">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+        >
+          <svg
+            class="slds-button__icon slds-button__icon_large"
+            aria-hidden="true"
+          >
+            <use
+              xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+            ></use>
+          </svg>
+          <span class="slds-assistive-text">{labels.LBL_Cancel_And_Close}</span>
+        </button>
+        <div class="slds-modal__header">
+          <h1
+            id="delete_detail_confirm_header"
+            class="slds-modal__title slds-hyphenate"
+          >
+          {labels.LBL_Delete_Task}
+          </h1>
+        </div>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="delete_detail_confirm_content"
+        >
+          <p>{labels.MSG_Task_Deleted} <b>{modalRecord.Name}</b></p>
+        </div>
+        <div class="slds-modal__footer">
+          <button
+            class="slds-button slds-button_neutral"
+            aria-label="Cancel and close"
+            onclick={handleModalCancelBtn}
+          >
+          {labels.LBL_Cancel}
+          </button>
+          <button
+            class="slds-button slds-button_destructive"
+            onclick={deleteDailyReportDetail}
+          >
+          {labels.LBL_Delete}
+          </button>
+        </div>
+      </div>
+    </section>
+    <div
+      class="slds-backdrop slds-backdrop_open"
+      role="presentation"
+      lwc:if={showDetailDeleteConfirmModal}
+    ></div>
+    <!-- END CONFIRM DELETE DETAIL MODAL -->
+    <!-- START CLONE DETAIL MODAL -->
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="clone_detail"
+      class="slds-modal slds-fade-in-open"
+      lwc:if={showDetailCloneModal}
+    >
+      <div class="slds-modal__container">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+        >
+          <svg
+            class="slds-button__icon slds-button__icon_large"
+            aria-hidden="true"
+          >
+            <use
+              xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+            ></use>
+          </svg>
+          <span class="slds-assistive-text">Cancel and close</span>
+        </button>
+        <div class="slds-modal__header">
+          <h1 id="clone_detail_header" class="slds-modal__title slds-hyphenate">
+            {labels.LBL_Clone} <b>{modalRecord.Name}</b>
+          </h1>
+        </div>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="clone_detail_content"
+        >
+          <div>
+            <lightning-input
+              label="Pick a date"
+              type="date"
+              onchange={handleCloneDateChange}
+              min={minCloneDate}
+              max={maxCloneDate}
+              value={selectedCloneDate}
+            ></lightning-input>
+            <div
+              class="slds-form-element__help slds-show"
+              style="color: #ba0517"
+              data-error-message=""
+              aria-live="polite"
+              lwc:if={cloneToPtoOrSundayError}
+            >
+            {labels.MSG_Cannot_Clone} {recordTypeName}.
+            </div>
+            <div
+              class="slds-form-element__help slds-show"
+              style="color: #ba0517"
+              data-error-message=""
+              aria-live="polite"
+              lwc:elseif={cloneToSubmittedDate}
+            >
+            {labels.MSG_Cannot_Clone_Submit}
+            </div>
+          </div> 
+        </div>
+        <div class="slds-modal__footer">
+          <button
+            class="slds-button slds-button_neutral"
+            aria-label="Cancel and close"
+            onclick={handleDetailCloneBtn}
+          >
+          {labels.LBL_Clone}
+          </button>
+          <button
+            class="slds-button slds-button_destructive"
+            onclick={handleModalCancelBtn}
+          >
+          {labels.LBL_Cancel}
+          </button>
+        </div>
+      </div>
+    </section>
+    <div
+      class="slds-backdrop slds-backdrop_open"
+      role="presentation"
+      lwc:if={showDetailCloneModal}
+    ></div>
+    <!-- END CLONE DETAIL MODAL -->
+     <!-- ============================================================== -->
+          <!-- START CONFIRM CANCEL DETAIL EDIT MODAL -->
+    <section
+    role="dialog"
+    tabindex="-1"
+    aria-modal="true"
+    aria-labelledby="cancel_edit_detail_confirm"
+    class="slds-modal slds-fade-in-open"
+    lwc:if={showSubmitConfirmModal}
+  >
+    <div class="slds-modal__container">
+      <button
+        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+      >
+        <svg
+          class="slds-button__icon slds-button__icon_large"
+          aria-hidden="true"
+        >
+          <use
+            xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+          ></use>
+        </svg>
+        <span class="slds-assistive-text">{labels.LBL_Cancel_And_Close}</span>
+      </button>
+      <div class="slds-modal__header">
+        <h1
+          id="cancel_submit_header"
+          class="slds-modal__title slds-hyphenate"
+        >
+        {labels.LBL_Submit_Day}
+        </h1>
+      </div>
+      <div
+        class="slds-modal__content slds-p-around_medium"
+        id="cancel_submit_content"
+      >
+        <p>{labels.MSG_Changes_Submitted}</p>
+      </div>
+      <div class="slds-modal__footer">
+        <button
+          class="slds-button slds-button_neutral"
+          aria-label="Cancel and close"
+          onclick={submitDay}
+        >
+        {labels.LBL_Submit_Day}
+        </button>
+        <button
+          class="slds-button slds-button_destructive"
+          onclick={cancelSubmit}
+        >
+        {labels.LBL_Cancel}
+        </button>
+      </div>
+    </div>
+  </section>
+  <div
+    class="slds-backdrop slds-backdrop_open"
+    role="presentation"
+    lwc:if={showSubmitConfirmModal}
+  ></div>
+  <!-- END CONFIRM CANCEL DETAIL EDIT MODAL -->
+    <section
+    role="dialog"
+    tabindex="-1"
+    aria-modal="true"
+    aria-labelledby="cancel_edit_detail_confirm"
+    class="slds-modal slds-fade-in-open"
+    lwc:if={showSubmitProblemModel}
+    >
+      <div class="slds-modal__container">
+        <button
+          class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+        >
+          <svg
+            class="slds-button__icon slds-button__icon_large"
+            aria-hidden="true"
+          >
+            <use
+              xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+            ></use>
+          </svg>
+          <span class="slds-assistive-text">{labels.LBL_Cancel_And_Close}</span>
+        </button>
+        <div class="slds-modal__header">
+          <h1
+            id="cancel_submit_day_header"
+            class="slds-modal__title slds-hyphenate"
+          >
+          <lightning-icon size='small' icon-name='utility:warning' alternative-text='warning' title='warning'></lightning-icon>
+          {labels.LBL_Cannot_Submit_Day}
+          </h1>
+        </div>
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="cancel_submit_day_content"
+        >
+          <p>{labels.MSG_Cannot_Submit_Day}</p>
+        </div>
+        <div class="slds-modal__footer">
+          <button
+            class="slds-button slds-button_destructive"
+            onclick={cancelSubmit}
+          >
+          {labels.LBL_Cancel}
+          </button>
+        </div>
+      </div>
+    </section>
+    <div
+        class="slds-backdrop slds-backdrop_open"
+        role="presentation"
+        lwc:if={showSubmitProblemModel}
+      ></div>
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-modal="true"
+        aria-labelledby="cancel_edit_detail_confirm"
+        class="slds-modal slds-fade-in-open"
+        lwc:if={showReloadConfirmModel}
+        >
+          <div class="slds-modal__container">
+            <button
+              class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            >
+              <svg
+                class="slds-button__icon slds-button__icon_large"
+                aria-hidden="true"
+              >
+                <use
+                  xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"
+                ></use>
+              </svg>
+              <span class="slds-assistive-text">{labels.LBL_Cancel_And_Close}</span>
+            </button>
+            <div class="slds-modal__header">
+              <h1
+                id="cancel_reload_confirm_header"
+                class="slds-modal__title slds-hyphenate"
+              >
+              {labels.LBL_Reload_Confirm}
+              </h1>
+            </div>
+            <div
+              class="slds-modal__content slds-p-around_medium"
+              id="cancel_reload_confirm_content"
+            >
+              <p>{labels.MSG_Reload_Confirmation}</p>
+            </div>
+            <div class="slds-modal__footer">
+              <button
+                class="slds-button slds-button_neutral"
+                aria-label="Cancel and close"
+                data-id={adminId}
+                onclick={handleSelectUserAfterSearch}
+              >
+              {labels.LBL_Yes_Sure}
+              </button>
+              <button
+                class="slds-button slds-button_destructive"
+                onclick={cancelReload}
+              >
+              {labels.LBL_Cancel}
+              </button>
+            </div>
+          </div>
+        </section>
+        <div
+            class="slds-backdrop slds-backdrop_open"
+            role="presentation"
+            lwc:if={showReloadConfirmModel}
+          ></div>
+  </div>
+  <!-- END OF CONTAINER -->
+</template>

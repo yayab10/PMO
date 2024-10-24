@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="multipleButton">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim Multiple Button</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__AppPage">
+            <property name="minheight" type="Integer" default="0" label="Minimum Buttons Height (px)"/>
+            <property name="btnfirstlabel1" type="String" placeholder="Label" label="Button 1 : First Label"/>
+            <property name="btnsecondlabel1" type="String" placeholder="Label" label="Button 1 : Second Label"/>
+            <property name="btnurl1" type="String" default="http://" label="Button 1 : URL"/>
+            <property name="isnewtab1" type="Boolean" default="false" label="Button 1 : Open in new tab"/>
+            <property name="btncolorhex1" type="String" default="0000FF" label="Button 1 : HEX Button Color"/>
+            <property name="btntextcolorhex1" type="String" default="FFFFFF" label="Button 1 : HEX Button Text Color"/>
+            <property name="buttonicon1" type="String" label="Button 1 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="borderradius1" type="String" label="Button 1 : Border Radius(px)"/>
+            <property name="show1" type="Boolean" default="false" label="Button 1 : Visible"/>
+            <property name="btnfirstlabel2" type="String" placeholder="Label" label="Button 2 : First Label"/>
+            <property name="btnsecondlabel2" type="String" placeholder="Label" label="Button 2 : Second Label"/>
+            <property name="btnurl2" type="String" default="http://" label="Button 2 : URL"/>
+            <property name="isnewtab2" type="Boolean" default="false" label="Button 2 : Open in new tab"/>
+            <property name="btncolorhex2" type="String" default="0000FF" label="Button 2 : HEX Button Color"/>
+            <property name="btntextcolorhex2" type="String" default="FFFFFF" label="Button 2 : HEX Button Text Color"/>
+            <property name="buttonicon2" type="String" label="Button 2 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="borderradius2" type="String" label="Button 2 : Border Radius(px)"/>
+            <property name="show2" type="Boolean" default="false" label="Button 2 : Visible"/>
+            <property name="btnfirstlabel3" type="String" placeholder="Label" label="Button 3 : First Label"/>
+            <property name="btnsecondlabel3" type="String" placeholder="Label" label="Button 3 : Second Label"/>
+            <property name="btnurl3" type="String" default="http://" label="Button 3 : URL"/>
+            <property name="isnewtab3" type="Boolean" default="false" label="Button 3 : Open in new tab"/>
+            <property name="btncolorhex3" type="String" default="0000FF" label="Button 3 : HEX Button Color"/>
+            <property name="btntextcolorhex3" type="String" default="FFFFFF" label="Button 3 : HEX Button Text Color"/>
+            <property name="borderradius3" type="String" label="Button 3 : Border Radius(px)"/>
+            <property name="buttonicon3" type="String" label="Button 3 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="show3" type="Boolean" default="false" label="Button 3 : Visible"/>
+            <property name="btnfirstlabel4" type="String" placeholder="Label" label="Button 4 : First Label"/>
+            <property name="btnsecondlabel4" type="String" placeholder="Label" label="Button 4 : Second Label"/>
+            <property name="btnurl4" type="String" default="http://" label="Button 4 : URL"/>
+            <property name="isnewtab4" type="Boolean" default="false" label="Button 4 : Open in new tab"/>
+            <property name="btncolorhex4" type="String" default="0000FF" label="Button 4 : HEX Button Color"/>
+            <property name="btntextcolorhex4" type="String" default="FFFFFF" label="Button 4 : HEX Button Text Color"/>
+            <property name="borderradius4" type="String" label="Button 4 : Border Radius(px)"/>
+            <property name="buttonicon4" type="String" label="Button 4 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="show4" type="Boolean" default="false" label="Button 4 :"/>
+            <property name="btnfirstlabel5" type="String" placeholder="Label" label="Button 5 : First Label"/>
+            <property name="btnsecondlabel5" type="String" placeholder="Label" label="Button 5 : Second Label"/>
+            <property name="btnurl5" type="String" default="http://" label="Button 5 : URL"/>
+            <property name="isnewtab5" type="Boolean" default="false" label="Button 5 : Open in new tab"/>
+            <property name="btncolorhex5" type="String" default="0000FF" label="Button 5 : HEX Button Color"/>
+            <property name="btntextcolorhex5" type="String" default="FFFFFF" label="Button 5 : HEX Button Text Color"/>
+            <property name="borderradius5" type="String" label="Button 5 : Border Radius(px)"/>
+            <property name="buttonicon5" type="String" label="Button 5 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="show5" type="Boolean" default="false" label="Button 5 : Visible"/>
+            <property name="btnfirstlabel6" type="String" placeholder="Label" label="Button 6 : First Label"/>
+            <property name="btnsecondlabel6" type="String" placeholder="Label" label="Button 6 : Second Label"/>
+            <property name="btnurl6" type="String" default="http://" label="Button 6 : URL"/>
+            <property name="isnewtab6" type="Boolean" default="false" label="Button 6 : Open in new tab"/>
+            <property name="btncolorhex6" type="String" default="0000FF" label="Button 6 : HEX Button Color"/>
+            <property name="btntextcolorhex6" type="String" default="FFFFFF" label="Button 6 : HEX Button Text Color"/>
+            <property name="borderradius6" type="String" label="Button 6 : Border Radius(px)"/>
+            <property name="buttonicon6" type="String" label="Button 6 : Icon" datasource="apex://IconNamePickList"/>
+            <property name="show6" type="Boolean" default="false" label="Button 6 : Visible"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

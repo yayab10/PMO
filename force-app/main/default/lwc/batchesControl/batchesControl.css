@@ -1,0 +1,12 @@
+tr:hover {background-color:#f5f5f5;}
+table {
+    width: 100%;
+  }
+.slds-has-dividers_around-space:hover{background-color:#f5f5f5;cursor: pointer;}
+
+.slds-truncate{white-space: normal;}
+.stickyCol {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="negoptimFilesExplorer">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim File Explorer</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage, lightning__AppPage, lightning__RecordPage">
+            <property name="TypeOfFilesToSearch" label="Search for type" type="String" datasource="Images,Others,All"/>
+            <property name="FilesToDisplayPerRequest" default="20" label="Number of displayed files" type="Integer" min="1"/>
+            <property name="CreatedDateOrder" label="Sort by created date" type="String" datasource="Ascending,Descending"/>
+            <property name="FolderToSearchIn" type="String" label="Path to search in" datasource="apex://FileExplorerDataSource"/>
+            <property name="ShowURL" type="boolean" label="Show URL"/>
+            <property name="deepSearch" type="boolean" label="Use deep Search"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

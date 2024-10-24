@@ -1,0 +1,16 @@
+<template>
+    <lightning-layout class="slds-p-around_none" multiple-rows="true" pull-to-boundary="">
+        <template for:each={allBox} for:index="Count" for:item="item">
+            <lightning-layout-item flexibility="auto" class={item.class} key={item.class}>
+                <div class=" slds-has-dividers_around-space slds-p-around_x-small">
+                    <article class="slds-tile slds-truncate" style={item.style}>
+                        <div>
+                            {item.queryResult}
+                            <p style="font-size: 2rem" class="slds-align_absolute-center">{item.text}</p>
+                        </div>
+                    </article>
+                </div>
+            </lightning-layout-item>
+        </template>
+    </lightning-layout>
+</template>

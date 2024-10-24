@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="AggregateBoxes">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim Aggregate Boxes</masterLabel>
+    <targets>
+        <target>lightning__HomePage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__AppPage,lightning__RecordPage">
+            <property name="aggregateQuery1" type="String" label="Box1: SOQL Aggregation" placeholder="SELECT COUNT(Id) FROM Custom_sObject__c" description="Put Valid SOQL."/>
+            <property name="text1" type="String" label="Box1: Text" placeholder="DV Budget"/>
+            <property name="color1" type="String" label="Box1: Text Color" placeholder="#ffffff"/>
+            <property name="backgroundColor1" type="String" label="Box1: Background Color" placeholder="#ffffff"/>
+            <property name="aggregateQuery2" type="String" label="Box2: SOQL Aggregation" placeholder="SELECT COUNT(Id) FROM Custom_sObject__c" description="Put Valid SOQL."/>
+            <property name="text2" type="String" label="Box2: Text" placeholder="DV Budget"/>
+            <property name="color2" type="String" label="Box2: Text Color" placeholder="#ffffff"/>
+            <property name="backgroundColor2" type="String" label="Box2: Background Color" placeholder="#ffffff"/>
+            <property name="aggregateQuery3" type="String" label="Box3: SOQL Aggregation" placeholder="SELECT COUNT(Id) FROM Custom_sObject__c" description="Put Valid SOQL."/>
+            <property name="text3" type="String" label="Box3: Text" placeholder="DV Budget"/>
+            <property name="color3" type="String" label="Box3: Text Color" placeholder="#ffffff"/>
+            <property name="backgroundColor3" type="String" label="Box3: Background Color" placeholder="#ffffff"/>
+            <property name="aggregateQuery4" type="String" label="Box4: SOQL Aggregation" placeholder="SELECT COUNT(Id) FROM Custom_sObject__c" description="Put Valid SOQL."/>
+            <property name="text4" type="String" label="Box4: Text" placeholder="DV Budget"/>
+            <property name="color4" type="String" label="Box4: Text Color" placeholder="#ffffff"/>
+            <property name="backgroundColor4" type="String" label="Box4: Background Color" placeholder="#ffffff"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="landingPage">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Negoptim Landing Page</masterLabel>
+    <targets>
+        <target>lightning__HomePage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__AppPage,lightning__RecordPage">
+            <property name="title" type="String" label="Title" placeholder="enter a title"/>
+            <property name="logo" type="String" label="Logo" datasource="apex://AssetLibraryImagesDataSource" description="you can only pick pictures from the assets folder"/>
+            <property name="showlogo" type="boolean" label="Show Logo" default="false"/>
+            <property name="url" type="String" label="Url" placeholder="http://" description="Link URL."/>
+            <property name="textsize" type="String" label="Tiles Text size" placeholder="12pt"/>
+            <property name="minimumtilesheight" type="String" label="Tiles minimum height" placeholder="200px" default="200px"/>
+            <property name="backgroundcolor" type="String" label="Background Color" description="You can use hex color or color name."/>
+            <property name="text1" type="String" label="Tile 1 Text"/>
+            <property name="showtext1" type="boolean" label="Show Tile 1" default="false"/>
+            <property name="link1" type="String" label="Tile 1 Link" placeholder="http://" description="Link URL."/>
+            <property name="color1" type="String" label="Tile 1 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor1" type="String" label="Tile 1 Text Color" description="You can use hex color or color name."/>
+            <property name="icon1" type="String" label="Tile 1 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text2" type="String" label="Tile 2 Text"/>
+            <property name="showtext2" type="boolean" label="Show Tile 2" default="false"/>
+            <property name="link2" type="String" label="Tile 2 Link" placeholder="http://" description="Link URL."/>
+            <property name="color2" type="String" label="Tile 2 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor2" type="String" label="Tile 2 Text Color" description="You can use hex color or color name."/>
+            <property name="icon2" type="String" label="Tile 2 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text3" type="String" label="Tile 3 Text"/>
+            <property name="showtext3" type="boolean" label="Show Tile 3" default="false"/>
+            <property name="link3" type="String" label="Tile 3 Link" placeholder="http://" description="Link URL."/>
+            <property name="color3" type="String" label="Tile 3 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor3" type="String" label="Tile 3 Text Color" description="You can use hex color or color name."/>
+            <property name="icon3" type="String" label="Tile 3 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text4" type="String" label="Tile 4 Text"/>
+            <property name="showtext4" type="boolean" label="Show Tile 4" default="false"/>
+            <property name="link4" type="String" label="Tile 4 Link" placeholder="http://" description="Link URL."/>
+            <property name="color4" type="String" label="Tile 4 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor4" type="String" label="Tile 4 Text Color" description="You can use hex color or color name."/>
+            <property name="icon4" type="String" label="Tile 4 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text5" type="String" label="Tile 5 Text"/>
+            <property name="showtext5" type="boolean" label="Show Tile 5" default="false"/>
+            <property name="link5" type="String" label="Tile 5 Link" placeholder="http://" description="Link URL."/>
+            <property name="color5" type="String" label="Tile 5 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor5" type="String" label="Tile 5 Text Color" description="You can use hex color or color name."/>
+            <property name="icon5" type="String" label="Tile 5 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text6" type="String" label="Tile 6 Text"/>
+            <property name="showtext6" type="boolean" label="Show Tile 6" default="false"/>
+            <property name="link6" type="String" label="Tile 6 Link" placeholder="http://" description="Link URL."/>
+            <property name="color6" type="String" label="Tile 6 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor6" type="String" label="Tile 6 Text Color" description="You can use hex color or color name."/>
+            <property name="icon6" type="String" label="Tile 6 Icon " datasource="apex://IconNamePickList"/>
+            <property name="text7" type="String" label="Tile 7 Text"/>
+            <property name="showtext7" type="boolean" label="Show Tile 7" default="false"/>
+            <property name="link7" type="String" label="Tile 7 Link" placeholder="http://" description="Link URL."/>
+            <property name="color7" type="String" label="Tile 7 Background Color" description="You can use hex color or color name."/>
+            <property name="textcolor7" type="String" label="Tile 7 Text Color" description="You can use hex color or color name."/>
+            <property name="icon7" type="String" label="Tile 7 Icon " datasource="apex://IconNamePickList"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

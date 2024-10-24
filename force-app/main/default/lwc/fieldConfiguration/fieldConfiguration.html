@@ -1,0 +1,62 @@
+<template>
+<div  class="slds-card">
+ <div class="slds-grid">
+    <div class="slds-col slds-size_1-of-3">
+        <lightning-input class="slds-m-left_x-small" label="Select Object:" onchange={search} onfocus={showPickListOptions} type="search"
+            value={selectedValue}>
+        </lightning-input>
+        <div if:true={searchResults} style="left:17%;" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid slds-m-top_xx-small slds-size_1-of-3" role="listbox" >
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <template for:each={searchResults} for:item="searchResult">
+                    <li key={searchResult.apiname} data-value={searchResult.apiname} role="presentation"
+                        onclick={selectSearchResult} class="slds-listbox__item">
+                        <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                            role="option">
+                            <span class="slds-media__body">
+                                <span class="slds-truncate" title={searchResult.label}>
+                                    {searchResult.label}
+                                </span>
+                            </span>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-col slds-col slds-size_1-of-3">
+        <lightning-combobox 
+                class="slds-m-left_x-small"
+                label="Rows per Template" 
+                options={rowsOptions} 
+                value={selectedRows} 
+                onchange={handleRowsChange}>
+            </lightning-combobox>
+    </div>
+    <div class="slds-col slds-size_1-of-4 slds-m-left_small">
+        <lightning-input type="Text" onchange={handleTemplateChange} label="Template Name:" value={templateName}>
+
+        </lightning-input>
+    </div>
+ </div>
+ <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col slds-size_1-of-3 slds-m-left_x-small">
+            <template for:each={rows} for:item="row" for:index="index">
+                <div key={row.id} class="slds-m-left_x-small">
+                    <lightning-combobox label={row.label} value={row.fieldsPerRow} options={fieldPerRowOptions} data-index={index} onchange={handleFieldsPerRowChange}></lightning-combobox>
+                </div>
+                <template for:each={row.fields} for:item="field" for:index="fieldIndex">
+                    <div key={field.id} class="slds-m-left_x-small slds-box slds-m-top_small">
+                        <lightning-combobox label="Field Name:" value={field.apiName} options={fieldOptions} data-row-index={index} data-field-index={fieldIndex} onchange={handleFieldChange}></lightning-combobox>
+                        <lightning-input type="checkbox" label="Mandatory" checked={field.isMandatory} data-row-index={index} data-field-index={fieldIndex} onchange={handleMandatoryChange}></lightning-input>
+                        <lightning-input type="checkbox" label="Read-Only" checked={field.isReadOnly} data-row-index={index} data-field-index={fieldIndex} onchange={handleReadOnlyChange}></lightning-input>
+                    </div>
+                </template>
+            </template>
+        </div>
+        <div class="slds-col slds-size_1-of-3 slds-m-left_x-small slds-m-top_small">
+            <lightning-button variant="brand" onclick={SaveFieldSettings} label={labels.LBL_Save}>
+            </lightning-button>
+        </div>
+ </div>
+</div>
+</template>

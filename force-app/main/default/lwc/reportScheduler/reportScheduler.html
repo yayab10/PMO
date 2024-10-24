@@ -1,0 +1,393 @@
+<template>
+    <lightning-card title={folderName}>
+        <div class="slds-p-horizontal_small">
+            <!-- tabs -->
+            <lightning-tabset>
+                <lightning-tab label={labels.LBL_Section}>
+                    <div class="slds-m-left_medium slds-size--1-of-2">
+                        <lightning-combobox name="report" label={labels.LBL_Choose_Report} value={selectedReportId}
+                            options={reportsOptions} onchange={changeSelectedReport}></lightning-combobox>
+                    </div>
+                </lightning-tab>
+                <lightning-tab label={labels.LBL_Schedule_Execution}>
+                    <!--radio group to choose between cron expression or manualy schedule-->
+                    <div class="slds-m-left_medium slds-size--1-of-2">
+                        <lightning-radio-group name="schedulerType" label={labels.LBL_Scheduler_Type}
+                            options={schedulerTypeOptions} value="1" onchange={changeSchedulerType} type="radio">
+                        </lightning-radio-group>
+                    </div>
+                    <div if:true={schedulerTypeCron}>
+                        <div class="slds-grid slds-m-left_medium">
+                            <div class="slds-col slds-size--1-of-2">
+                                <lightning-input type="text" value={cronExpr} placeholder={cronExpr}
+                                    onchange={changeCronExpr} label={labels.LBL_CronExpression}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-m-top_medium">
+                                <lightning-helptext content={cronExpressionHelpText}>
+                                </lightning-helptext>
+                            </div>
+                        </div>
+                    </div>
+                    <div if:false={schedulerTypeCron}>
+                        <div>
+                            <lightning-layout>
+                                <lightning-layout-item padding="around-small">
+                                    <div class="header-column">
+                                        <p class="field-title" title="Frequency">{labels.LBL_Frequency}</p>
+                                        <lightning-radio-group name="frequency" options={frequenciesOptions}
+                                            value={selectedFrequency} type="radio" onchange={changeFrequency}>
+                                        </lightning-radio-group>
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small">
+                                    <div class="header-column">
+                                        <p class="field-title" title={labels.LBL_Time}>{labels.LBL_Time}</p>
+                                        <lightning-input type="time" placeholder={labels.LBL_Time}
+                                            value={scheduleStartTime} onchange={changeScheduleStartTime}>
+                                        </lightning-input>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                        <!-- Section changes depending on the selected frequency -->
+                        <div class="slds-box slds-m-around_medium">
+                            <div if:true={isDaily}>
+                                <lightning-input type="checkbox" label={labels.LBL_Everyday} name="everyday"
+                                    checked={isEverydaySelected} onchange={toggleIsEverydaySelected}>
+                                </lightning-input>
+                                <lightning-layout>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="number of days">{labels.LBL_Every}</p>
+                                            <lightning-input type="number" placeholder={labels.LBL_Every}
+                                                value={numberOfDays} min="1" onchange={changeNumberOfDays}
+                                                disabled={isEverydaySelected}></lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="starting on">{labels.LBL_Starting_On}</p>
+                                            <lightning-combobox name="startOnDay" options={daysOfTheWeekOptions}
+                                                value={selectedDayOfTheWeek} onchange={changeDaysOfTheWeek}
+                                                disabled={isEverydaySelected}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                            <div if:true={isWeekly}>
+                                <lightning-checkbox-group name="daysOfTheWeek" options={daysOfTheWeekOptions}
+                                    value={selectedDaysOfTheWeek} onchange={changeWeeklyValue}>
+                                </lightning-checkbox-group>
+                            </div>
+                            <div if:true={isMonthly}>
+                                <lightning-layout>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" style="visibility: hidden;" title="monthly option 1">
+                                                Hidden Text</p>
+                                            <lightning-input type="radio" checked={monthlyOption1}
+                                                onchange={switchMonthlyOption}>
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="On Day">{labels.LBL_On_Day}</p>
+                                            <lightning-combobox options={dayOfTheMonthOptions}
+                                                value={selectedDayOfTheMonth} disabled={monthlyOption2}
+                                                onchange={changeDayOfMonth}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="number of months">{labels.LBL_Of_Every}</p>
+                                            <lightning-input type="number" placeholder="number of months"
+                                                value={numberOfMonths} min="1" disabled={monthlyOption2}
+                                                onchange={changeNumberOfMonths}></lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" style="visibility: hidden;" title="number of months">
+                                                Hidden Text</p>
+                                            <p class="field-title" title="number of months">{labels.LBL_Month}</p>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                                <lightning-layout>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" style="visibility: hidden;" title="monthly option 2">
+                                                Hidden Text</p>
+                                            <lightning-input type="radio" checked={monthlyOption2}
+                                                onchange={switchMonthlyOption}>
+                                            </lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="On Day">{labels.LBL_On_The}</p>
+                                            <lightning-combobox options={sequenceOptions} value={selectedSequence}
+                                                disabled={monthlyOption1} onchange={changeSequence}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" style="visibility: hidden;" title="number of months">
+                                                Hidden Text</p>
+                                            <lightning-combobox options={daysOfTheWeekOptions}
+                                                value={selectedSequenceType} disabled={monthlyOption1}
+                                                onchange={changeSequenceType}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" title="number of months">{labels.LBL_Of_Every}</p>
+                                            <lightning-input type="number" placeholder="number of months"
+                                                value={numberOfMonths} min="1" disabled={monthlyOption1}
+                                                onchange={changeNumberOfMonths}></lightning-input>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small">
+                                        <div class="header-column">
+                                            <p class="field-title" style="visibility: hidden;" title="number of months">
+                                                Hidden Text</p>
+                                            <p class="field-title" title="number of months">{labels.LBL_Month}</p>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-tab>
+                <lightning-tab label={labels.LBL_Recipients}>
+                    <div class="slds-m-left_medium slds-size--1-of-2">
+                        <lightning-combobox name="group" label={labels.LBL_Group_User} value=""
+                            options={userGroupOptions} placeholder="" onchange={changeGroup}></lightning-combobox>
+                    </div>
+                    <div class="slds-m-left_medium slds-m-top_medium slds-size--1-of-2">
+                        <template iterator:emailinput={additionnalEmaillist}>
+                            <div class="slds-grid" key={emailinput.value.key} if:true={emailinput.first}>
+                                <lightning-input type="email" name="emailList" label={{labels.LBL_Additionals_Emails}}
+                                    placeholder="email@test.com" onblur={changeEmail} class="slds-size_1-of-2"
+                                    value={emailinput.value.value} data-index={emailinput.index}>
+                                </lightning-input>
+                                <lightning-button-icon icon-name="utility:add" alternative-text="Add new Email input"
+                                    variant="brand" onclick={addNewEmailInput}
+                                    class="slds-p-top_medium slds-p-left_small" style="margin-top: 4px;">
+                                </lightning-button-icon>
+                            </div>
+                            <div class="slds-grid" key={emailinput.value.key} if:false={emailinput.first}>
+                                <lightning-input type="email" name="emailList" placeholder="email@test.com"
+                                    onblur={changeEmail} class="slds-size_1-of-2" data-index={emailinput.index}
+                                    value={emailinput.value.value}>
+                                </lightning-input>
+                                <lightning-button-icon icon-name="utility:delete" alternative-text="Delete"
+                                    onclick={deleteEmailInput} data-index={emailinput.index}
+                                    class="slds-p-top_medium slds-p-left_small" icon-class="deleteIcon">
+                                </lightning-button-icon>
+                            </div>
+                        </template>
+                    </div>
+                </lightning-tab>
+                <lightning-tab label={labels.LBL_Filter}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12">
+                            <lightning-combobox name="buSource" label={labels.Assortment_BU__c.BU_source__c} value="" options={buSourceOptions}
+                                onchange={changeBuSource}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12">
+                            <lightning-combobox name="buTarget" label={labels.Assortment_BU__c.BU_Target__c} value="" options={buTargetOptions}
+                                onchange={changeBuTarget} disabled={buTargetDisabled}>
+                            </lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12">
+                            <lightning-combobox name="category" label={labels.Assortment_BU__c.Orga_HE__c} value=""
+                                options={categoriesOptions} onchange={changeCategory}></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12">
+                            <lightning-input type="text" label={labels.Assortment_BU__c.Year__c} class="slds-size_xx-small"
+                                value={selectedYear} onchange={changeYear}>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-12"></div>
+                    </div>
+                </lightning-tab>
+                <!--tab for email body-->
+                <lightning-tab label={labels.LBL_Email_Body}>
+                    <lightning-input name="emailSubject" label={labels.LBL_Email_Subject} onchange={changeEmailSubject}
+                        value={emailSubject} class="slds-size_1-of-3">
+                    </lightning-input>
+                    <lightning-input-rich-text value={emailBody} onchange={changeEmailBody}
+                        disabled-categories="INSERT_CONTENT" class="slds-m-top_small"></lightning-input-rich-text>
+                </lightning-tab>
+            </lightning-tabset>
+            <!-- Button -->
+            <div class="slds-m-left_small slds-m-top_small">
+                <lightning-button label={labels.LBL_Schedule} onclick={scheduleExportReport}></lightning-button>
+            </div>
+            <!-- Grids -->
+            <div class="slds-p-around_small">
+                <lightning-tabset>
+                    <lightning-tab label={labels.LBL_Scheduled_Jobs}>
+                        <div class="slds-has-dividers_around-space slds-p-around_small">
+                            <article class="slds-tile slds-thuncate" style="overflow-x: scroll;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.CronJobDetail}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.PreviousFireTime}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.NextFireTime}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.State}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.TimesTriggered}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    {labels.CronTrigger.CreatedById}
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div>
+                                                    <lightning-button-icon icon-name="utility:refresh" variant="base"
+                                                        alternative-text="refresh" size="large"
+                                                        onclick={refreshScheduleTable}>
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={cronTriggersData} for:item="item">
+                                            <tr key={item.Id}>
+                                                <td>
+                                                    {item.index}
+                                                </td>
+                                                <td>
+                                                    <lightning-button variant="base" label={labels.LBL_Abort}
+                                                        value={item.Id} onclick={abortCronTrigger}></lightning-button>
+                                                </td>
+                                                <td>
+                                                    {item.reportName}
+                                                </td>
+                                                <td>
+                                                    {item.previousFireTime}
+                                                </td>
+                                                <td>
+                                                    {item.nextFireTime}
+                                                </td>
+                                                <td>
+                                                    {item.state}
+                                                </td>
+                                                <td>
+                                                    {item.timesTriggered}
+                                                </td>
+                                                <td>
+                                                    {item.createdByName}
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </article>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label={labels.LBL_Logs} if:true={showLogsTab}>
+                        <div class="slds-has-dividers_around-space slds-p-around_small">
+                            <article class="slds-tile slds-thuncate" style="overflow-x: scroll;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.Log__c.Name}</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.LBL_Reports}</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.Log__c.CompletedDate__c}</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.Log__c.Status__c}</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.Log__c.TraceLog__c}</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">{labels.Log__c.CreatedById}</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={logsData} for:item="log">
+                                            <tr key={log.Id}>
+                                                <td>
+                                                    <a href={log.link} target="_Blank">{log.Name}</a>
+                                                </td>
+                                                <td>
+                                                    <div>{log.Report}</div>
+                                                </td>
+                                                <td>
+                                                    <div>{log.CompletedDate}</div>
+                                                </td>
+                                                <td>
+                                                    <div>{log.Status}</div>
+                                                </td>
+                                                <td>
+                                                    <div>{log.TraceLog}</div>
+                                                </td>
+                                                <td>
+                                                    <div>{log.createdByName}</div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </article>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim Button Executor</masterLabel>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Contract_Group__c</object>
+                <object>Invoice_Group__c</object>
+                <object>Invoice_Payment_Group__c</object>
+                <object>Rebate_Payment_Group__c</object>
+                <object>Contract__c</object>
+                <object>Commercial_Plan__c</object>
+                <object>Supply_Penalty__c</object>
+                <object>Contract_Discount__c</object>
+                <object>Commercial_Plan_Detail__c</object>
+                <object>Sup_Supplier__c</object>
+                <object>Product2</object>
+            </objects>
+            <property name="bgcolorStyle" type="String" default="white" label="Background Color" placeholder="#ffffff or white" description="the background color of the entire buttons"/>
+            <property name="textcolorStyle" type="String" default="black" label="Text Color" placeholder="#000000 or black" description="the Text color of the buttons"/>
+            <property name="fontSizeStyle" type="String" default="12pt" label="Font size" placeholder="12pt" description="the font size of the buttons"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

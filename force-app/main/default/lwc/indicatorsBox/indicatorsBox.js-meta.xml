@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="indicatorsBox">
+    <apiVersion>50.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>negOptim Indicators Box</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__AppPage">
+            <property name="recordId" type="String" default="" label="Record Id"/>
+            <property name="description" type="String" label="Description"/>
+            <property name="backgroundColor" placeholder="#AABBCC or blue" type="String" label="Background color"/>
+            <property name="fieldsStackOrientation" type="String" label="Display mode" default="Vertical" datasource="Vertical,Horizontal"/>
+            <property name="field1" required="true" type="String" label="First Field"/>
+            <property name="render1" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue1 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor1" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue1" type="Integer" label="Lower than"/>
+            <property name="lessThancolor1" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor1" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor1" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="field2" type="String" label="Second Field"/>
+            <property name="render2" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue2" type="Integer" label="Greater than"/>
+            <property name="greaterThanColor2" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue2" type="Integer" label="Lower than"/>
+            <property name="lessThancolor2" type="String" label="Lower than color" placeholder="#AABBCC or blue"/>
+            <property name="borderColor2" type="String" label="Box border color" placeholder="#AABBCC or blue"/>
+            <property name="backgroundColor2" type="String" label="Box background color" placeholder="#AABBCC or blue"/>
+            <property name="field3" type="String" label="Third Field"/>
+            <property name="render3" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue3" type="Integer" label="Greater than"/>
+            <property name="greaterThanColor3" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue3" type="Integer" label="Lower than"/>
+            <property name="lessThancolor3" type="String" label="Lower than color" placeholder="#AABBCC or blue"/>
+            <property name="borderColor3" type="String" label="Box border color" placeholder="#AABBCC or blue"/>
+            <property name="backgroundColor3" type="String" label="Box background color" placeholder="#AABBCC or blue"/>
+        </targetConfig>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="description" type="String" label="Description"/>
+            <property name="backgroundColor" placeholder="#AABBCC or blue" type="String" label="Background color"/>
+            <property name="fieldsStackOrientation" type="String" label="Display mode" default="Vertical" datasource="Vertical,Horizontal"/>
+            <property name="field1" type="String" datasource="apex://IndicatorsBoxCmpController" label="First Field"/>
+            <property name="render1" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue1 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor1" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue1" type="Integer" label="Lower than"/>
+            <property name="lessThancolor1" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor1" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor1" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="field2" type="String" datasource="apex://IndicatorsBoxCmpController" label="Second Field"/>
+            <property name="render2" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue2" type="Integer" label="Greater than"/>
+            <property name="greaterThanColor2" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue2" type="Integer" label="Lower than"/>
+            <property name="lessThancolor2" type="String" label="Lower than color" placeholder="#AABBCC or blue"/>
+            <property name="borderColor2" type="String" label="Box border color" placeholder="#AABBCC or blue"/>
+            <property name="backgroundColor2" type="String" label="Box background color" placeholder="#AABBCC or blue"/>
+            <property name="field3" type="String" datasource="apex://IndicatorsBoxCmpController" label="Third Field"/>
+            <property name="render3" type="Boolean" default="false" label="Visible"/>
+            <property name="greaterThanValue3" type="Integer" label="Greater than"/>
+            <property name="greaterThanColor3" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue3" type="Integer" label="Lower than"/>
+            <property name="lessThancolor3" type="String" label="Lower than color" placeholder="#AABBCC or blue"/>
+            <property name="borderColor3" type="String" label="Box border color" placeholder="#AABBCC or blue"/>
+            <property name="backgroundColor3" type="String" label="Box background color" placeholder="#AABBCC or blue"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

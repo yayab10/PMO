@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="indicatorsBoxMultiple">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>negOptim Indicators Box Multiple</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__AppPage">
+            <property name="description" type="String" label="Description"/>
+            <property name="backgroundColor" placeholder="#AABBCC or blue" type="String" label="Background color"/>
+            <property name="fieldsStackOrientation" type="String" label="Display mode" default="Vertical" datasource="Vertical,Horizontal"/>
+            <property name="recordId1" type="String" default="" label="First Record Id"/>
+            <property name="field1" required="true" type="String" label="Field"/>
+            <property name="greaterThanValue1 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor1" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue1" type="Integer" label="Lower than"/>
+            <property name="lessThancolor1" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor1" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor1" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render1" type="Boolean" default="false" label="Visible"/>
+            <property name="recordId2" type="String" default="" label="Second Record Id"/>
+            <property name="field2" type="String" label="Field"/>
+            <property name="greaterThanValue2 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor2" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue2" type="Integer" label="Lower than"/>
+            <property name="lessThancolor2" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor2" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor2" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render2" type="Boolean" default="false" label="Visible"/>
+            <property name="recordId3" type="String" default="" label="Third Record Id"/>
+            <property name="field3" type="String" label="Field"/>
+            <property name="greaterThanValue3 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor3" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue3" type="Integer" label="Lower than"/>
+            <property name="lessThancolor3" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor3" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor3" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render3" type="Boolean" default="false" label="Visible"/>
+            <property name="recordId4" type="String" default="" label="Forth Record Id"/>
+            <property name="field4" type="String" label="Field"/>
+            <property name="greaterThanValue4 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor4" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue4" type="Integer" label="Lower than"/>
+            <property name="lessThancolor4" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor4" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor4" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render4" type="Boolean" default="false" label="Visible"/>
+            <property name="recordId5" type="String" default="" label="Fifth Record Id"/>
+            <property name="field5" type="String" label="Field"/>
+            <property name="greaterThanValue5 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor5" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue5" type="Integer" label="Lower than"/>
+            <property name="lessThancolor5" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor5" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor5" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render5" type="Boolean" default="false" label="Visible"/>
+            <property name="recordId6" type="String" default="" label="Sixth Record Id"/>
+            <property name="field6" type="String" label="Field"/>
+            <property name="greaterThanValue6 " type="Integer" label="Greater than"/>
+            <property name="greaterThanColor6" type="String" label="Greater than color" placeholder="#AABBCC or blue"/>
+            <property name="lessThanValue6" type="Integer" label="Lower than"/>
+            <property name="lessThancolor6" type="String" placeholder="#AABBCC or blue" label="Lower than color"/>
+            <property name="borderColor6" type="String" placeholder="#AABBCC or blue" label="Box border color"/>
+            <property name="backgroundColor6" type="String" placeholder="#AABBCC or blue" label="Box background color"/>
+            <property name="render6" type="Boolean" default="false" label="Visible"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

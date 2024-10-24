@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>negOptim Grid Settings Plugin</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__HomePage,lightning__RecordPage, lightningCommunity__Default">
+            <property name="templateName" type="String" label="Grid Settings Template" required="true" datasource="apex://GridSettingsPluginDataSource" default=""/>
+            <property name="displayNewButton" type="Boolean" label="Display New Button" default="false" />
+            <property name="displayCloneButton" type="Boolean" label="Display Clone Button" default="false" />
+            <!-- <property name="displayDeleteInlineButton" type="Boolean" label="Display Delete inline row" default="false" /> -->
+            <property name="displayNewInlineButton" type="Boolean" label="Display New inline row" default="false" />
+            <property name="filterOnNoneDisplayedFields" type="Boolean" label="Filter on fields that are no displayed in the grid" default="false" />
+            <property name="allowDelete" type="Boolean" label="Display Delete Button" default="false" />
+            <property name="allowFilter" type="Boolean" label="Display Filter" default="false" />
+            <property name="nameAsURL" type="Boolean" label="Display record names as url " default="false" />
+            <property name="allowExport" type="Boolean" label="Display Export button" default="false" />
+            <property name="partialSave" type="Boolean" label="Apply partial save" default="false" />
+            <property name="readOnly" type="Boolean" label="Read Only" default="false" />
+            <property name="showSubTotal" type="Boolean" label="Show Sub Total" default="false" />
+            <property name="displayShowHideColumns" type="Boolean" label="Display Show/Hide Columns" default="false" />
+            <property name="refreshViewAfterSave" type="Boolean" label="Refresh standard components after save" default="false" />
+            <property name="doNotLoadDataByDefault" type="Boolean" label="Do Not Load data by default" default="false" />
+            <property name="numberFixedColumns" type="Integer" label="Number Of Fixed Columns" default="0" />
+            <property name="labelNewInlineButton" type="String" label="Label of New Inline Row Button" default="New inline row" />
+            <property name="cmpHeight" type="String" label="Component height" placeholder="300px" description="Exemple: 400px. "/>
+
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

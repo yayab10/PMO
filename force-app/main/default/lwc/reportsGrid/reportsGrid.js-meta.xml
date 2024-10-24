@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="ReportsGrid">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+	<masterLabel>NegOptim Reports Grid</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__RecordPage,lightning__AppPage">
+            <property name="folderName" type="String" label="Folder Name:" datasource="apex://ReportsGridDataSource" description="Enter the folder name" />
+            <property name="height" type="Integer" label="Table height:" description="the height of the table" />
+            <property name="rowObject" type="String" label="Row Object:" description="Row Object:" datasource="apex://CustomObjectsDataSource" />
+            <property name="rowfieldObject1" type="String" label="Row field filter 1:" description="Row field Object 1:" />
+            <property name="rowfilterValue1" type="String" label="Row filter value 1 :" description="Row filter value 1 :" />
+            <property name="rowfieldObject2" type="String" label="Row field filter 2:" description="Row field Object 2:" />
+            <property name="rowfilterValue2" type="String" label="Row filter value 2:" description="Row filter value 2:" />
+            <property name="orderByRow" type="String" label="Order Row by field:" description="Order Row by field:" />
+            <property name="colObject" type="String" label="column Object:" description="column Object:" datasource="apex://CustomObjectsDataSource" />
+            <property name="colfieldObject1" type="String" label="column field filter 1:" description="column field Object 1:" />
+            <property name="colfilterValue1" type="String" label="column filter value 1:" description="column filter value 1:" />
+            <property name="colfieldObject2" type="String" label="column field filter 2:" description="column field Object 2:" />
+            <property name="colfilterValue2" type="String" label="column filter value 2:" description="column filter value 2:" />
+            <property name="orderByCol" type="String" label="Order Column by field:" description="Order Row by field:" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

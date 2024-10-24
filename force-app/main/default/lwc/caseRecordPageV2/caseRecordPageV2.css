@@ -1,0 +1,481 @@
+.actionButton {
+    cursor: pointer;
+    color: white;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    margin: 0;
+    padding: 6px;
+    padding-top: 17px;
+    padding-bottom: 17px;
+    text-overflow: ellipsis;
+    /* padding-right: 26px; */
+    border-radius: 12px;
+}
+.buttonContainer {
+    width: 25%;
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+}
+
+.buttonGroupContainer {
+    font-size: 0;
+    container-type: inline-size;
+}
+.statusList, .buttonGroupContainer, .buttonContainer, .div1 {
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+/* table, th, td {
+    padding: 0px;
+} */
+.tabClass {
+    /* height:29vh; */
+}
+
+.internalQATable td {
+    text-align: center;
+    white-space: pre-wrap;
+    min-width: 200px;
+    height: 60px;
+
+}
+
+.internalQATable th {
+    text-align: center;
+    z-index: 3;
+    position: sticky;
+    top: 0;
+}
+
+.breakCell {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.callButton {
+    background-color: #806bbf;
+}
+
+.callButton:hover {
+    background-color: #9d83e9;
+}
+
+.emailButton {
+    background-color: #14B3BB;
+}
+
+.emailButton:hover {
+    background-color: #1acdd6;
+}
+
+.relaunchButton {
+    background-color: #8CC58A;
+}
+
+.relaunchButton:hover {
+    background-color: #97d194;
+}
+
+.statusButton {
+    background-color: #BDD25A;
+}
+
+.statusButton:hover {
+    background-color: #c4da5a;
+}
+
+.div1 {
+    z-index: 1;
+    width: 20%;
+    /* font-size:0 */
+}
+
+.div2 {
+    z-index: 4;
+    margin-top: 0;
+    width: 55%;
+    /* font-size:0 */
+}
+.div3 {
+    z-index: 4;
+    width: 25%;
+    border-left: 1px solid rgba(0, 0, 0, 0.089);
+    /* font-size:0 */
+}
+
+.wideTd {
+    min-width: 250px;
+    text-align: left !important;
+}
+
+.polygonClass {
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 5% 100%);
+    background: white;
+    width: 89%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    position: absolute;
+    z-index: 3
+}
+
+.borderClass {
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 5% 100%);
+    background: rgba(0, 0, 0, 0.089);
+    width: 89%;
+    top: 0;
+    right: 1px;
+    bottom: 0;
+    left: auto;
+    position: absolute;
+    z-index: 2
+}
+
+.titleClass {
+    font-weight: 600;
+}
+
+.acitivityIcon {
+    background: white;
+    position: absolute;
+    left: 10px;
+    margin-top: 10px;
+    top: -10px;
+    /* background: white;*/
+}
+
+.profileIcon {
+    background: white;
+}
+
+.subTitleClass {
+    font-style: italic;
+    font-size: smaller;
+    margin-top: -10px;
+}
+
+.editButton {
+    position: absolute;
+    right: 0.75rem;
+    top: 4px;
+    scale: 1.3;
+}
+
+.emptyProductLabel {
+    position: absolute;
+    left: 0.75rem;
+    top: 4px;
+    scale: 1.3;
+}
+
+.questionEditButton {
+    position: absolute;
+    right: 0.75rem;
+    top: 4px;
+}
+
+.sectionTitle {
+    min-height: 50px;
+    position: relative;
+    background: #F3F3F3;
+    align-items: center;
+    font-size: 1rem;
+    line-height: 1.875rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+
+
+.statusIcon {
+    /* height: 90px; */
+}
+
+.productTabClass {
+    min-height: 300px;
+    position: relative;
+    /* height: 30%; */
+}
+
+.tabSetClass {
+    min-height: 300px;
+}
+
+.nextStepTitle {
+    position: relative;
+    text-align: center;
+    font-size: large;
+    height: 41px;
+    font-weight: 600;
+    background: #791395;
+    color: white;
+}
+.nextstepTable td {
+    width: min-content;
+    padding: 0.1rem;
+    cursor: pointer;
+    width: 20px;
+    /* min-width: 100px; */
+}
+.nextstepVerticalTable {
+    border-collapse: collapse;
+}
+.nextstepVerticalTable td {
+    padding: 0.1rem;
+    cursor: pointer;
+    white-space: break-spaces;
+    /* min-width: 100px; */
+}
+.padding {
+    padding: 5px;
+}
+.borderBottom {
+    border-bottom: 2px solid rgb(0 0 0 / 40%);
+}
+.nextStepHeader { 
+    background-color: rgb(243, 243, 243);
+    color: rgb(68, 68, 68);
+    padding: 0.25rem 0.5rem;
+    font-weight: 700;
+    white-space: nowrap!important;
+}
+.addButton {
+    --slds-c-button-text-color: white;
+}
+
+.addButton:hover {
+    cursor: pointer;
+}
+
+/* @container (max-width:620px) {
+    .actionButton {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+}
+@container (min-width:820px) {
+    .actionButton {
+        padding-left: 58px;
+        padding-right: 58px;
+    }
+}
+@container (min-width:1100px) {
+    .actionButton {
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+}
+@container (min-width:1300px) {
+    .actionButton {
+        padding-left: 122px;
+        padding-right: 122px;
+    }
+}
+@container (min-width:3200px) {
+    .actionButton {
+        padding-left: 140px;
+        padding-right: 140px;
+    }
+} */
+
+
+/* Q&A */
+.question {
+    color: #00708A;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.answer {
+    border-left: 2px solid #00708A;
+    margin-top: 10px;
+    font-size: 13px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+}
+
+.bold1 {
+    font-weight: 600;
+}
+
+.bold2 {
+    font-weight: 700;
+}
+
+.popover1 {
+    position: absolute;
+    left: -710px;
+    top: -365px;
+    z-index: 9;
+    width: 700px;
+}
+.popover1Vertical {
+    position: absolute;
+    left: -454px;
+    white-space: break-spaces;
+    bottom: -25%;
+    z-index: 9;
+    overflow: hidden;
+    width: 448px;
+}
+
+.popoverBody1 {
+    height: 365px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 7px;
+}
+
+.popover2 {
+    position: absolute;
+    left: -710px;
+    top: -200px;
+    z-index: 9;
+    width: 700px;
+}
+.popover2Vertical {
+    position: absolute;
+    left: -454px;
+    white-space: break-spaces;
+    bottom: -25%;
+    z-index: 9;
+    width: 448px;
+    overflow: hidden;
+}
+
+.popoverBody2 {
+    min-height: 50px;
+    margin-bottom: 10px;
+}
+
+.p1 {
+    font-size: 46px;
+    font-weight: 700;
+    color: #C00000;
+}
+
+.fontSize1 {
+    font-size: 17px;
+    white-space: no-wrap;
+}
+
+.fontSize2 {
+    font-size: 22px;
+    white-space: no-wrap;
+}
+.fontSize3 {
+    font-size: 14px;
+}
+.caseInfoDiv {
+    color: #595959;
+}
+
+.blueDiv {
+    background: #00708A;
+    color: white;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.div1Toggle:hover,
+.div3Toggle:hover {
+    background: aliceblue;
+}
+
+.div1Toggle {
+    display: none;
+    position: absolute;
+    left: -7px;
+    top: 300px;
+    border: 1px solid rgba(0, 0, 0, 0.089);
+}
+
+.div3Toggle {
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    right: -7px;
+    top: 300px;
+    z-index: 12;
+    border: 1px solid rgba(0, 0, 0, 0.089);
+}
+
+.clickableDiv:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+@media (max-width:1150px) {
+    .buttonContainer {
+        width: 50%;
+    }
+}
+@media (max-width:950px) {
+    .buttonContainer {
+        width: 100%;
+    }
+}
+.nextSteps2 {
+    display: none;
+}
+@media (max-width:1600px) {}
+
+@media (max-width:1300px) {
+    .nextSteps1 {
+        display: none;
+    }
+    .nextSteps2 {
+        display: inline;
+    }
+}
+
+
+@media (max-width:1450px) {
+    .borderClass {
+        display: none;
+    }
+
+    .div1 {
+        display: none;
+        width: 30%;
+    }
+
+    .div2 {
+        width: 70%;
+    }
+
+    .div3 {
+        width: 30%;
+    }
+
+    .borderClass {
+        width: 80%;
+        height: 150%;
+    }
+
+    .polygonClass {
+        width: 80%;
+        height: 150%;
+    }
+
+    .div1Toggle {
+        display: inline;
+        cursor: pointer;
+    }
+
+    .dinline {
+        display: inline !important;
+    }
+
+    .dnone {
+        display: none !important;
+        cursor: pointer;
+    }
+}

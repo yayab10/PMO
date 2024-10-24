@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="reportShortcut">
+    <apiVersion>48.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>NegOptim Reports Shortcuts</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__HomePage,lightning__RecordPage,lightning__AppPage">
+            <property name="BackColor" type="String" default="#ffffff" label="Background Color" placeholder="#ffffff or white" description="the background color of the entire box"/>
+            <property name="TextColor" type="String" default="#000000" label="Text Color" placeholder="#000000 or black" description="the Text color of the box"/>
+            <property name="StandardFolderName" type="String" label="Folder of Standard Reports" datasource="apex://ReportsGridDataSource" description="choose the standard folder name"/>
+            <property name="CloneFolderName" type="String" label="Folder of Clone Reports" datasource="apex://ReportsGridDataSource" description="choose the Clone folder name"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

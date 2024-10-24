@@ -1,0 +1,12 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <template for:each={buttons} for:item="btn">
+            <template if:true={btn.show}>
+                <c-private-button key={btn} btnfirstlabel={btn.btnfirstlabel} btnsecondlabel={btn.btnsecondlabel} btnurl={btn.btnurl} minheight={btn.minheight}
+                    isnewtab={btn.isnewtab} btncolorhex={btn.btncolorhex} btntextcolorhex={btn.btntextcolorhex} buttonicon={btn.iconName} iconclassname={btn.iconClass}
+                    borderradius={btn.borderradius} class={eachComponentCSSclass}>
+                </c-private-button>
+            </template>
+        </template>
+    </div>
+</template>

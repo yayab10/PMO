@@ -1,0 +1,1031 @@
+<template>
+    <div class="main-container">
+        <div class="slds-is-relative">
+            <template if:true={Loading}>
+                <lightning-spinner size="large" variant="brand"></lightning-spinner>
+            </template>
+            <div class="slds-page-header">
+                <!-- LAYOUT GRID -->
+                <div class="header">
+                    <div class="slds-grid slds-show_small">
+                        <!-- GRID COL -->
+                        <div class="slds-col">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="utility:matrix"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-line-height_reset">{Label.LBL_Grid_Settings}</p>
+                                    <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"
+                                        title={Label.LBL_Grid_Layout}>
+                                        <div class="slds-grid">
+                                            <div>{Label.LBL_Grid_Layout}</div>
+                                            <div if:true={instance.currentTemplate.name}>
+                                                <span>: {instance.currentTemplate.label}</span>
+                                                <lightning-button-icon size="x-small" icon-name="utility:edit"
+                                                    class="slds-p-left--x-small" onclick={openEditGridTemplatePopup}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                        <lightning-button value={Label.LBL_Cancel} label={Label.LBL_Cancel} onclick={cancelBtnHandler}
+                            class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button value={Label.LBL_New} label={Label.LBL_New} onclick={newBtnHandler}
+                            class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button variant="brand" onclick={checkSave} label={Label.LBL_Save}
+                            if:true={instance.isDisableTemplateSave}>
+                        </lightning-button>
+                        <lightning-button variant="brand" disabled label={Label.LBL_Save}
+                            if:false={instance.isDisableTemplateSave}>
+                        </lightning-button>
+                        <lightning-button-menu icon-name="utility:connected_apps" menu-alignment="right" nubbin
+                            class="slds-p-left_x-small" if:false={disableSaveAs}>
+                            <lightning-menu-item value={Label.LBL_Change_Type} label={Label.LBL_Change_Type}
+                                onclick={openChangeTypePopUpHandler} prefix-icon-name="utility:change_record_type">
+                            </lightning-menu-item>
+                            <lightning-menu-divider></lightning-menu-divider>
+                            <lightning-menu-item onclick={saveAsBtnHandler} label={Label.LBL_Save_As}
+                                prefix-icon-name="utility:save">
+                            </lightning-menu-item>
+                        </lightning-button-menu>
+                    </div>
+                    <div class="slds-grid slds-wrap slds-hide_small">
+                        <!-- GRID COL -->
+                        <div class="slds-size_1-of-1">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="utility:settings"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-line-height_reset">
+                                        {Label.LBL_Grid_Settings}
+                                    </p>
+                                    <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate"
+                                        title={Label.LBL_Grid_Layout}>
+                                        {Label.LBL_Grid_Layout}
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-1 slds-grid slds-p-top_x-small">
+                            <lightning-button value={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                                onclick={cancelBtnHandler} class="slds-p-right_x-small">
+                            </lightning-button>
+                            <lightning-button value={Label.LBL_New} label={Label.LBL_New} onclick={newBtnHandler}
+                                class="slds-p-right_x-small">
+                            </lightning-button>
+                            <lightning-button variant="brand" onclick={checkSave} label={Label.LBL_Save}
+                                if:true={instance.isDisableTemplateSave}>
+                            </lightning-button>
+                            <lightning-button variant="brand" disabled label={Label.LBL_Save}
+                                if:false={instance.isDisableTemplateSave}>
+                            </lightning-button>
+                            <lightning-button-menu icon-name="utility:connected_apps" menu-alignment="right" nubbin
+                                class="slds-p-left_x-small" if:false={disableSaveAs}>
+                                <lightning-menu-item value={Label.LBL_Change_Type} label={Label.LBL_Change_Type}
+                                    onclick={openChangeTypePopUpHandler} prefix-icon-name="utility:change_record_type">
+                                </lightning-menu-item>
+                                <lightning-menu-divider></lightning-menu-divider>
+                                <lightning-menu-item onclick={saveAsBtnHandler} label={Label.LBL_Save_As}
+                                    prefix-icon-name="utility:save">
+                                </lightning-menu-item>
+                            </lightning-button-menu>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-page-header__detail-row slds-grid slds-wrap body" style="padding: 0;">
+                    <div class="slds-col slds-grid slds-truncate" style="height: -webkit-fill-available;">
+                        <div class="slds-col slds-size_1-of-4 slds-border_right "
+                            style="background-color: white; height: inherit">
+                            <div class="templatesSplitView slds-split-view_container slds-panel_docked-left slds-is-open"
+                                style="height: -webkit-fill-available;">
+                                <div class="slds-panel__header slds-p-around_x-small searchBox" id="filterHeader">
+                                    <div style="padding: 0;" class="slds-page-header__col-details">
+                                        <lightning-input type="search" data-form="first" variant="label-hidden"
+                                            autocomplete="off" onfocus={focusTemplateInput} onchange={searchTemplate}
+                                            onblur={closeDropdownTemplate} onkeyup={searchTemplate}
+                                            onkeydown={searchTemplate} value={searchTermTemplate}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                                <template if:false={hasLayouts}>
+                                    <div class="slds-align_absolute-center slds-m-vertical_small">
+                                        <span class="slds-truncate" title={Label.LBL_No_Item_To_Display}>
+                                            {Label.LBL_No_Item_To_Display}
+                                        </span>
+                                    </div>
+                                </template>
+                                <div class="slds-card" if:true={hasLayouts}>
+                                    <article aria-hidden="false" id="split-view-id"
+                                        class="slds-split-view slds-grid slds-grid_vertical slds-scrollable">
+                                        <div class="slds-grid slds-grid_vertical">
+                                            <ul aria-multiselectable="true" class="slds-scrollable_y" role="listbox"
+                                                aria-label="Select an item to open it in a new workspace tab.">
+                                                <template if:true={hasLayouts} for:each={layouts} for:item="layout">
+                                                    <li class="slds-split-view__list-item" role="presentation"
+                                                        key={layout.value} data-id={layout.value}
+                                                        onclick={TemplateChangeHandler}>
+                                                        <a href="#" role="option" data-id={layout.value}
+                                                            class="menuItem slds-split-view__list-item-action slds-grow slds-has-flexi-truncate"
+                                                            tabindex="0">
+                                                            <div class="slds-grid slds-wrap">
+                                                                <b>
+                                                                    <span
+                                                                        class="slds-truncate slds-text-body_regular slds-text-color_default"
+                                                                        title={layout.label}>{layout.label}</span>
+                                                                </b>
+                                                                <span class="slds-truncate slds-col_bump-left"
+                                                                    title="packageIcon">
+                                                                    <lightning-icon if:true={layout.namespacePrefix}
+                                                                        icon-name="utility:package" size="xx-small">
+                                                                    </lightning-icon>
+                                                                </span>
+                                                            </div>
+                                                            <div class="slds-grid">
+                                                                <span class="slds-truncate"
+                                                                    title={layout.currentObject}>{layout.currentObject}
+                                                                    <span if:true={layout.masterObject}
+                                                                        title={layout.masterObject}> •
+                                                                        {layout.masterObject} </span>
+                                                                </span>
+                                                                <span class="slds-truncate slds-col_bump-left"
+                                                                    title={layout.type}>{layout.type}</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form_stacked slds-col slds-scrollable" if:true={instance.displayGrid}>
+                            <lightning-tabset style="height: 100%;">
+                                <lightning-tab class="slds-p-around_small" label={Label.LBL_Detail_Object}
+                                    if:true={instance.currentTemplate.displayDetail} value="detail"
+                                    onactive={clearSearchQueries}>
+                                    <div class="slds-grid slds-wrap slds-grid_align-end custom_slds-grid_align-start">
+                                        <div class="slds-col slds-p-right_x-small">
+                                            <lightning-combobox class="slds-p-right_small"
+                                                label={Label.LBL_Select_Object} options={instance.objects}
+                                                value={instance.currentObject.value} onchange={ObjectTypeChangeHandler}>
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-p-right_x-small">
+                                            <lightning-combobox label={Label.LBL_Default_Page_Size}
+                                                value={instance.currentTemplate.Default_Page_Size}
+                                                options={defaultPageSizeOptions} onchange={handleDefaultPageSizeChange}>
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-p-top_large slds-p-right_x-small"
+                                            if:true={hasPreview}>
+                                            <lightning-button-icon-stateful icon-name="utility:preview"
+                                                selected={showPreviewValue} onclick={pickViewhandler}>
+                                            </lightning-button-icon-stateful>
+                                        </div>
+                                        <div class="slds-col slds-p-top_large" if:true={hasPreview}>
+                                            <lightning-button-icon icon-name="utility:filterList"
+                                                onclick={openFilterSettings}>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="slds-grid slds-wrap slds-grid_align-end custom_slds-grid_align-start slds-p-left_xx-small">
+                                        <div
+                                            class="slds-col slds-grid slds-wrap slds-grid_align-end custom_slds-grid_align-start">
+                                            <div>
+                                                <div>{Label.LBL_Available_Fields}</div>
+                                                <div class="slds-p-right_small">
+                                                    <lightning-input variant="label-hidden" data-tab="detail"
+                                                        value={queryTermDetail} style="padding: 0; !important"
+                                                        onkeyup={handleSearchFields} onchange={handleSearchFields}
+                                                        onkeypress={handleSearchFields} type="search"
+                                                        class=" slds-m-bottom_xx-small"></lightning-input>
+                                                    <select data-recordid="ObjectFields" size="7" multiple
+                                                        onchange={ObjectFieldsSelectChangedHandler}
+                                                        class="oSelect slds-input">
+                                                        <template for:each={filteredFieldsList} for:item="item">
+                                                            <option key={item} value={item.value} title={item.label}
+                                                                class={item.cssClass}>
+                                                                {item.label}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <template if:true={ObjectRelatedFieldsFieldsShowStatus}>
+                                                <div class="slds-p-right_small slds-col">
+                                                    <div>{selectedObjectRefFieldLabel}
+                                                    </div>
+                                                    <lightning-input variant="label-hidden" data-tab="ref-detail"
+                                                        style="padding: 0; !important" onkeyup={handleSearchFields}
+                                                        onkeypress={handleSearchFields} onchange={handleSearchFields}
+                                                        type="search" class=" slds-m-bottom_xx-small"></lightning-input>
+                                                    <select data-recordid="ObjectRelatedFieldsFields" size="7" multiple
+                                                        onchange={ObjectRefFieldFieldsSelectChangedHandler}
+                                                        class="oSelect slds-input"
+                                                        disabled={ObjectRelatedFieldsFieldsDisableStatus}>
+                                                        <template for:each={filteredRefFieldsList} for:item="item">
+                                                            <option key={item} value={item.value} class={item.cssClass}>
+                                                                {item.label}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                            </template>
+                                            <div class="slds-dueling-list__column slds-p-right_small slds-col">
+                                                <lightning-button-icon icon-name="utility:add" size="medium"
+                                                    variant="bare" onclick={addSelectedFieldsHandler}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon title={Label.LBL_Add_Separator}
+                                                    icon-name="utility:threedots_vertical" size="medium" variant="bare"
+                                                    onclick={addSeperatorHandler}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col">
+                                            <div class="slds-dueling-list__column slds-p-right_small slds-col"
+                                                style="min-width: 145px;">
+                                                <div class="slds-form-element">
+                                                    <label
+                                                        class="slds-form-element__label">{Label.LBL_Field_Type}</label>
+                                                    <template if:true={isInputField}>
+                                                        <div class="slds-form-element__control slds-m-top_xx-small">
+                                                            <button
+                                                                class="slds-button slds-button_neutral slds-m-around_none slds-size_1-of-1 In"
+                                                                data-recordid="input" onclick={InOutChangeHandler}>
+                                                                {Label.LBL_Input}
+                                                            </button>
+                                                        </div>
+                                                        <div class="slds-form-element__control slds-m-top_xx-small">
+                                                            <button
+                                                                class="slds-button slds-button_neutral slds-m-around_none slds-size_1-of-1"
+                                                                data-recordid="output" onclick={InOutChangeHandler}>
+                                                                {Label.LBL_Output}
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                    <template if:false={isInputField}>
+                                                        <div class="slds-form-element__control slds-m-top_xx-small">
+                                                            <button
+                                                                class="slds-button slds-button_neutral slds-m-around_none slds-size_1-of-1"
+                                                                data-recordid="input" onclick={InOutChangeHandler}>
+                                                                {Label.LBL_Input}
+                                                            </button>
+                                                        </div>
+                                                        <div class="slds-form-element__control slds-m-top_xx-small">
+                                                            <button
+                                                                class="slds-button slds-button_neutral slds-m-around_none slds-size_1-of-1 Out"
+                                                                data-recordid="output" onclick={InOutChangeHandler}>
+                                                                {Label.LBL_Output}
+                                                            </button>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>{instance.currentTemplate.fieldslength} {Label.LBL_Selected_Fields}
+                                            </div>
+                                            <div class="slds-col slds-grid slds-p-top_small">
+                                                <div class="slds-dueling-list__column slds-p-right_small slds-col">
+                                                    <select class="oSelect slds-input" style="min-height: 224px;"
+                                                        data-recordid="wantedFields" size="9" multiple
+                                                        onchange={WantedFieldsChangeHandler}>
+                                                        <template for:each={instance.currentTemplate.fields}
+                                                            for:item="item" if:false={Loading}>
+                                                            <option key={item} value={item.value} class={item.cssClass}
+                                                                data-id={item.value}
+                                                                oncontextmenu={handleRightClickSettings}>
+                                                                {item.label}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                                <div class="slds-dueling-list__column slds-col">
+                                                    <lightning-button-icon icon-name="utility:up" size="medium"
+                                                        variant="bare" onclick={moveUpHandler}>
+                                                    </lightning-button-icon>
+                                                    <lightning-button-icon icon-name="utility:down" size="medium"
+                                                        variant="bare" onclick={moveDownHandler}>
+                                                    </lightning-button-icon>
+                                                    <lightning-button-icon icon-name="utility:delete" size="medium"
+                                                        variant="bare" onclick={removeSelectedFieldsHandler}>
+                                                    </lightning-button-icon>
+                                                    <lightning-button-icon icon-name="utility:settings" size="medium"
+                                                        variant="bare" onclick={openSettings}>
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showPreview}>
+                                        <div class="slds-scrollable slds-p-vertical_small">
+                                            <div class="slds-text-heading_large slds-align_absolute-center"
+                                                style="background-color:#98d6d6;">
+                                                {Label.LBL_Preview}
+                                            </div>
+                                            <div class="slds-scrollable slds-size_1-of-1">
+                                                <table class="slds-table slds-no-row-hover slds-table_bordered"
+                                                    oncontextmenu={preventDefaultHandler}>
+                                                    <thead>
+                                                        <tr class="slds-line-height_reset">
+                                                            <template for:each={previewTable} for:item="item">
+                                                                <template if:false={item.isSeparator}>
+                                                                    <th key={item} class="slds-p-around_small"
+                                                                        data-id={item.fieldApiName}
+                                                                        oncontextmenu={handleRightClickSettings}>
+                                                                        {item.FieldLabel}</th>
+                                                                </template>
+                                                            </template>
+                                                        </tr>
+                                                        <!--to display fields api name-->
+                                                        <tr class="slds-line-height_reset">
+                                                            <template for:each={previewTable} for:item="item">
+                                                                <template if:false={item.isSeparator}>
+                                                                    <th key={item} class="slds-p-around_small"
+                                                                        data-id={item.fieldApiName}
+                                                                        oncontextmenu={handleRightClickSettings}>
+                                                                        {item.fieldApiName}
+                                                                        <lightning-helptext icon-name="utility:info"
+                                                                            if:true={item.hasHelpText}
+                                                                            content={item.helpText}>
+                                                                        </lightning-helptext>
+                                                                    </th>
+                                                                </template>
+                                                            </template>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template for:each={previewCount} for:item="index">
+                                                            <tr key={index} class="slds-hint-parent">
+                                                                <template for:each={previewTable} for:item="obj">
+                                                                    <template if:false={obj.isSeparator}>
+                                                                        <td key={obj} style={obj.thnonConditional}
+                                                                            data-id={obj.fieldApiName}
+                                                                            oncontextmenu={handleRightClickSettings}>
+                                                                            <template if:false={obj.isPersonalised}>
+                                                                                <template if:true={obj.isInputField}>
+                                                                                    <template if:true={obj.isBoolean}>
+                                                                                        <lightning-input type="checkbox"
+                                                                                            checked
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName}>
+                                                                                        </lightning-input>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isString}>
+                                                                                        <input value="value" type="text"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isTextArea}>
+                                                                                        <textarea class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName}>
+                                                                                            value
+                                                                                        </textarea>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDouble}>
+                                                                                        <input value="2.7" type="text"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isPickList}>
+                                                                                        <select
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName}
+                                                                                            class="slds-select">
+                                                                                            <option>{Label.LBL_Option} 1
+                                                                                            </option>
+                                                                                            <option>{Label.LBL_Option} 2
+                                                                                            </option>
+                                                                                            <option>{Label.LBL_Option} 3
+                                                                                            </option>
+                                                                                            <option>{Label.LBL_Option} 4
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </template>
+                                                                                    <template
+                                                                                        if:true={obj.isMultiPickList}>
+                                                                                        <select multiple size='3'
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName}
+                                                                                            class="slds-select">
+                                                                                            <option selected>
+                                                                                                {Label.LBL_Option}
+                                                                                                1
+                                                                                            </option>
+                                                                                            <option>{Label.LBL_Option} 2
+                                                                                            </option>
+                                                                                            <option selected>
+                                                                                                {Label.LBL_Option}
+                                                                                                3
+                                                                                            </option>
+                                                                                            <option>{Label.LBL_Option} 4
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isReference}>
+                                                                                        <input type="search"
+                                                                                            class="slds-input"
+                                                                                            placeholder="search"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isInteger}>
+                                                                                        <input value="20" type="number"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isPercent}>
+                                                                                        <input value="50%" type="text"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDate}>
+                                                                                        <input type="date"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDateTime}>
+                                                                                        <input type="date"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isId}>
+                                                                                        <input type="text"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                    <template if:true={obj.isCurrency}>
+                                                                                        <input type="text"
+                                                                                            class="slds-input"
+                                                                                            style={obj.nonConditional}
+                                                                                            value="10$"
+                                                                                            onchange={previewTableActionHandler}
+                                                                                            data-field-api-name={obj.fieldApiName} />
+                                                                                    </template>
+                                                                                </template>
+                                                                                <template if:false={obj.isInputField}>
+                                                                                    <template if:true={obj.isBoolean}>
+                                                                                        <lightning-input type="checkbox"
+                                                                                            checked disabled>
+                                                                                        </lightning-input>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isString}>
+                                                                                        <template
+                                                                                            if:true={obj.isFormulaAndLogo}>
+                                                                                            <lightning-icon size="large"
+                                                                                                icon-name="standard:photo">
+                                                                                            </lightning-icon>
+                                                                                        </template>
+                                                                                        <template
+                                                                                            if:false={obj.isFormulaAndLogo}>
+                                                                                            value
+                                                                                        </template>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isTextArea}>
+                                                                                        value
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDouble}>
+                                                                                        24.2
+                                                                                    </template>
+                                                                                    <template if:true={obj.isPickList}>
+                                                                                        value
+                                                                                    </template>
+                                                                                    <template
+                                                                                        if:true={obj.isMultiPickList}>
+                                                                                        value1, value2, value3
+                                                                                    </template>
+                                                                                    <template if:true={obj.isReference}>
+                                                                                        <a
+                                                                                            href="javascript:void">value</a>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isInteger}>
+                                                                                        15
+                                                                                    </template>
+                                                                                    <template if:true={obj.isPercent}>
+                                                                                        15%
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDate}>
+                                                                                        DD/MM/YYYY
+                                                                                    </template>
+                                                                                    <template if:true={obj.isDateTime}>
+                                                                                        DD/MM/YYYY hh:mm:ss
+                                                                                    </template>
+                                                                                    <template if:true={obj.isId}>
+                                                                                        <a
+                                                                                            href="javascript:void">value</a>
+                                                                                    </template>
+                                                                                    <template if:true={obj.isCurrency}>
+                                                                                        10$
+                                                                                    </template>
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:true={obj.isPersonalised}>
+                                                                                <lightning-button label={obj.FieldLabel}
+                                                                                    if:true={obj.isButton}>
+                                                                                </lightning-button>
+                                                                                <a if:true={obj.isLink}
+                                                                                    href="javascript:void">{obj.FieldLabel}</a>
+                                                                            </template>
+                                                                        </td>
+                                                                    </template>
+                                                                </template>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </lightning-tab>
+                                <lightning-tab class="slds-p-around_small" style="height: 100%;"
+                                    label={Label.LBL_Master_Object} if:true={instance.currentTemplate.displayMaster}
+                                    value="master" onactive={clearSearchQueries}>
+                                    <div class="slds-grid slds-wrap slds-grid_align-end custom_slds-grid_align-start">
+                                        <div class="slds-col slds-p-right_x-small">
+                                            <lightning-combobox class="slds-p-right_small"
+                                                label={Label.LBL_Select_Object} options={instance.masterObjects}
+                                                value={instance.currentMasterObject.key}
+                                                onchange={MasterObjectTypeChangeHandler}>
+                                            </lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-p-right_x-small slds-p-top_large">
+                                            <lightning-badge label={instance.currentMasterObject.relationName}
+                                                if:true={instance.currentTemplate.isRelationalTemplate}
+                                                icon-name="action:view_relationship"></lightning-badge>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="slds-grid slds-wrap slds-grid_align-end custom_slds-grid_align-start slds-p-left_xx-small">
+                                        <div class="slds-col slds-grid">
+                                            <div class="slds-p-right_small">
+                                                <div>{Label.LBL_Available_Fields}</div>
+                                                <lightning-input variant="label-hidden" data-tab="master"
+                                                    value={queryTermMaster} style="padding: 0; !important"
+                                                    onkeyup={handleSearchFields} onkeypress={handleSearchFields}
+                                                    onchange={handleSearchFields} type="search"
+                                                    class=" slds-m-bottom_xx-small">
+                                                </lightning-input>
+                                                <select data-recordid="MasterObjectFields" size="7" multiple
+                                                    onchange={MasterObjectFieldsSelectChangedHandler}
+                                                    class="oSelect slds-input">
+                                                    <template for:each={filteredMasterObjFieldsList} for:item="item">
+                                                        <option key={item} value={item.value} title={item.label}
+                                                            class={item.cssClass}>
+                                                            {item.label}
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                            <div class="slds-dueling-list__column slds-p-right_small">
+                                                <lightning-button-icon icon-name="utility:add" size="medium"
+                                                    variant="bare" onclick={addSelectedMasterFieldsHandler}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-grid">
+                                            <div class="slds-dueling-list__column slds-p-right_small">
+                                                <div class="slds-p-bottom_small">
+                                                    {instance.currentTemplate.masterfieldslength}
+                                                    {Label.LBL_Selected_Fields}</div>
+                                                <select class="oSelect slds-input slds-p-top_small"
+                                                    data-recordid="wantedMasterFields" size="7" multiple
+                                                    onchange={WantedMasterFieldsChangeHandler}
+                                                    style="min-height: 224px;">
+                                                    <template for:each={instance.currentTemplate.masterfields}
+                                                        for:item="item" if:false={Loading}>
+                                                        <option key={item} value={item.value} class='Out'
+                                                            data-id={item.value}>
+                                                            {item.label}
+                                                        </option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                            <div class="slds-dueling-list__column">
+                                                <lightning-button-icon icon-name="utility:up" size="medium"
+                                                    variant="bare" onclick={moveUpMasterHandler}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon icon-name="utility:down" size="medium"
+                                                    variant="bare" onclick={moveDownMasterHandler}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon icon-name="utility:delete" size="medium"
+                                                    variant="bare" onclick={removeSelectedMasterFieldsHandler}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-grid">
+                                            <c-grid-settings-expression-editor data-comp="gridSettingsExpressionEditor"
+                                                criterias-wrapperjson={readOnlyCriteriasJSON}
+                                                onconfirmreadonlyexpressioneditor={confirmReadOnlyExpressionEditor}
+                                                confirm-event={Events.confirmReadOnlyExpressionEditor}
+                                                card-label={Label.LBL_Read_Only}>
+                                            </c-grid-settings-expression-editor>
+                                        </div>
+                                    </div>
+                                </lightning-tab>
+                                <lightning-tab class="slds-p-around_small" style="height: 100%;"
+                                    label={Label.LBL_Icon_Settings}>
+                                    <ul class="slds-grid slds-wrap">
+                                        <li>
+                                            <div class="slds-box_border slds-grid">
+                                                <div class="slds-app-launcher__tile-figure">
+                                                    <lightning-icon icon-name={instance.currentTemplate.icon}
+                                                        size="large">
+                                                    </lightning-icon>
+                                                </div>
+                                                <div class="slds-app-launcher__tile-body slds-grid">
+                                                    <lightning-combobox label={Label.LBL_Icon}
+                                                        options={instance.iconNamesList} variant="label-hidden"
+                                                        class="slds-m-top_small slds-size_medium"
+                                                        value={instance.currentTemplate.icon}
+                                                        onchange={iconChangeHandler}>
+                                                    </lightning-combobox>
+                                                    <lightning-button-icon icon-name="utility:loop"
+                                                        onclick={resetIconhandler}
+                                                        class="slds-m-top_small slds-p-left_x-small">
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </lightning-tab>
+                                <lightning-tab class="slds-p-around_small" style="height: 100%;"
+                                    label={Label.LBL_User_Filters}>
+                                    <div class="slds-grid">
+                                        <lightning-dual-listbox label={Label.LBL_User_Filters} variant="label-hidden"
+                                            source-label={Label.LBL_Available_Fields}
+                                            selected-label={Label.LBL_Selected_Fields} options={filterableFieldsList}
+                                            value={defaultUserFilter} onchange={handleUserFilterChange}>
+                                        </lightning-dual-listbox>
+                                    </div>
+                                </lightning-tab>
+                            </lightning-tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <template if:true={instance.fieldSettings.show}>
+            <c-grid-settings-field-options fieldswrapperjson={selectedWantedFieldsJSON} cancel-event={Events.cancelEdit}
+                refobjectfields={objectRefFields} objectfields={objectFields} icon-name-picklist={instance.iconNamesList}
+                fields-map={instance.currentObject.fieldsMap} oncanceledit={closeSettings}
+                onconfirmedit={confirmSettings} confirm-event={Events.confirmEdit}
+                relationshipname={instance.currentMasterObject.relationName} data-recordid="gridSettingsFieldOptions"
+                picklistvaluesjson={selectedWantedFieldspickListValuesJSON}
+                current-fields-settings-label={currentFieldsSettingsLabel}></c-grid-settings-field-options>
+        </template>
+        <template if:true={instance.filterSettings.show}>
+            <c-grid-settings-filter fields={instance.filterSettings.fields} is-popup="true"
+                oncancelfiltersettings={closeFilterSettings} cancel-event={Events.cancelFilterSettings}
+                confirm-event={Events.confirmFilterSettings} onconfirmfiltersettings={confirmFilterSettings}>
+            </c-grid-settings-filter>
+        </template>
+        <div if:true={instance.newTemplatePopUp.display}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-13" aria-modal="true"
+                aria-describedby="modal-content-id-13" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_New_Template}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium slds-grid slds-wrap" id="modal-content-id-13"
+                        style="overflow: unset;">
+                        <lightning-input label={Label.LBL_New_Template_Name} placeholder={Label.LBL_New_Template_Name}
+                            max-length="40" onchange={setTemplateNameHandler} value={instance.currentTemplate.name}
+                            class="slds-size_1-of-2 slds-p-right_x-small">
+                        </lightning-input>
+                        <lightning-combobox options={instance.types} value={instance.currentTemplate.type}
+                            label={Label.LBL_Template_Type} onchange={setTemplateTypeHandler} class="slds-size_1-of-2">
+                        </lightning-combobox>
+                        <lightning-combobox class="slds-size_1-of-2 slds-p-right_x-small"
+                            label={Label.LBL_Select_Object} options={instance.objects}
+                            value={instance.currentObject.value} onchange={ObjectTypeChangeHandler}
+                            if:true={instance.currentTemplate.displayDetail}>
+                        </lightning-combobox>
+                        <lightning-combobox class="slds-size_1-of-2" label={Label.LBL_Select_Master_Object}
+                            options={instance.masterObjects} value={instance.currentMasterObject.key}
+                            onchange={MasterObjectTypeChangeHandler} if:true={instance.currentTemplate.displayMaster}>
+                        </lightning-combobox>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel} onclick={cancelNewTemplate}
+                            class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Save} label={Label.LBL_Save} variant="brand"
+                            onclick={saveNewTemplate}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={showEditGridTemplatePopup}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Edit} > {instance.currentTemplate.label}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium slds-grid slds-wrap" style="overflow: unset;">
+                        <lightning-input label={Label.LBL_Template_Label} value={instance.currentTemplate.label}
+                            class="gridTemplateLabel">
+                        </lightning-input>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                            onclick={closeEditGridTemplatePopup} class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Confirm} label={Label.LBL_Confirm} variant="brand"
+                            onclick={confirmChangeGridTemplatePopUpHandler}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={instance.changeTypePopUp.display}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-14" aria-modal="true"
+                aria-describedby="modal-content-id-14" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Change_Type}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium slds-grid slds-wrap" id="modal-content-id-14"
+                        style="overflow: unset;">
+                        <lightning-combobox options={instance.types} value={instance.changeTypePopUp.type}
+                            label={Label.LBL_Template_Type} onchange={changeTypePopUpHandler} class="slds-size_1-of-1">
+                        </lightning-combobox>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                            onclick={closeChangeTypePopUpHandler} class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Confirm} label={Label.LBL_Confirm} variant="brand"
+                            onclick={confirmChangeTypePopUpHandler}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={instance.deployPopUp.display}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-15" aria-modal="true"
+                aria-describedby="modal-content-id-15" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Deploy}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium slds-grid slds-wrap" id="modal-content-id-15"
+                        style="overflow: unset;">
+                        {Label.MSG_Check_Before_Deploy}
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                            onclick={closeDeployPopUpHandler} class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Deploy} label={Label.LBL_Deploy} variant="brand"
+                            onclick={confirmDeployHandler}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={showSaveAsMenu}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Save_As}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <lightning-input label={Label.LBL_New_Template_Name} variant="label-hidden" max-length="40"
+                            placeholder={Label.LBL_New_Template_Name} onchange={saveAsTemplateNameChangeHandler}
+                            value={instance.saveAsTemplateName}>
+                        </lightning-input>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel} onclick={saveAsHide}
+                            class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Save} label={Label.LBL_Save} variant="brand"
+                            onclick={checkSaveAs}>
+                        </lightning-button>
+                    </footer>
+                </div>
+                <div if:true={showConfirmOverwrite}>
+                    <!-- Modal/Popup Box starts here-->
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                        aria-describedby="modal-content-id-4" class="slds-modal slds-fade-in-open ">
+                        <div class="slds-modal__container">
+                            <!-- Modal/Popup Box Header Starts here-->
+                            <header class="slds-modal__header">
+                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {Label.LBL_Overwrite}
+                                </div>
+                            </header>
+                            <!--Modal/Popup Box Body Starts here-->
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                                {Label.MSG_Template_Name_Used_Overwrite} "{instance.saveAsTemplateName}"?
+                            </div>
+                            <!--Modal/Popup Box Footer Starts here-->
+                            <footer class="slds-modal__footer">
+                                <lightning-button title={Label.LBL_No} label={Label.LBL_No}
+                                    onclick={cancelConfirmOverwrite} class="slds-p-right_x-small">
+                                </lightning-button>
+                                <lightning-button title={Label.LBL_Yes} label={Label.LBL_Yes} variant="brand"
+                                    onclick={confirmSaveAs}>
+                                </lightning-button>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={showDeleteConfirm}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+                aria-describedby="modal-content-id-3" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Delete}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium slds-text-align_center"
+                        id="modal-content-id-3">
+                        {Label.MSG_Confirm_Delete} "{instance.currentTemplate.name}"?
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                            onclick={deleteConfirmationHide} class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Yes} label={Label.LBL_Yes} variant="brand"
+                            onclick={deleteBtnHandler}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:false={showSaveAsMenu}>
+            <div if:true={showConfirmOverwrite}>
+                <!-- Modal/Popup Box starts here-->
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-04" aria-modal="true"
+                    aria-describedby="modal-content-id-5" class="slds-modal slds-fade-in-open ">
+                    <div class="slds-modal__container">
+                        <!-- Modal/Popup Box Header Starts here-->
+                        <header class="slds-modal__header">
+                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {Label.LBL_Overwrite}
+                            </div>
+                        </header>
+                        <!--Modal/Popup Box Body Starts here-->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                            {Label.MSG_Template_Name_Used_Overwrite} "{instance.currentTemplate.name}"?
+                        </div>
+                        <!--Modal/Popup Box Footer Starts here-->
+                        <footer class="slds-modal__footer">
+                            <lightning-button title={Label.LBL_No} label={Label.LBL_No} onclick={cancelConfirmOverwrite}
+                                class="slds-p-right_x-small">
+                            </lightning-button>
+                            <lightning-button title={Label.LBL_Yes} label={Label.LBL_Yes} variant="brand"
+                                onclick={confirmSave} if:false={showSaveAsMenu}>
+                            </lightning-button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+            </div>
+        </div>
+        <div if:true={showPersonalizedAddForm}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-07" aria-modal="true"
+                aria-describedby="modal-content-id-7" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {Label.LBL_Personalised_Field}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-7"
+                        style="overflow: unset;">
+                        <lightning-input label={Label.LBL_Field_Name} onchange={personalisedFieldNameChangeHandler}>
+                        </lightning-input>
+                        <lightning-combobox label={Label.LBL_Field_Type} onchange={personalisedFieldTypeChangeHandler}
+                            options={instance.personalisedField.options}>
+                        </lightning-combobox>
+                        <lightning-input label={Label.LBL_Action} onchange={personalisedActionChangeHandler}>
+                        </lightning-input>
+                        <lightning-input label={Label.LBL_Rerender} onchange={personalisedRerenderChangeHandler}
+                            field-level-help={Label.MSG_Rerender_Help_Text}>
+                        </lightning-input>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel}
+                            onclick={personalisedFieldHide} class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Yes} label={Label.LBL_Yes} variant="brand"
+                            onclick={confirmPersonalisedField}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+        <div if:true={showAddrelatedPopup}>
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-08" aria-modal="true"
+                aria-describedby="modal-content-id-8" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {instance.addrelatedFields.originafieldLabel}
+                        </div>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-8"
+                        style="overflow: unset;">
+                        <div>
+                            {Label.MSG_Add_Related_Fields}
+                        </div>
+                        <div>
+                            {instance.addrelatedFields.relatedFieldsLabel}
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning-button title={Label.LBL_Cancel} label={Label.LBL_Cancel} onclick={removeFromStack}
+                            class="slds-p-right_x-small">
+                        </lightning-button>
+                        <lightning-button title={Label.LBL_Yes} label={Label.LBL_Yes} variant="brand"
+                            onclick={addFromStack}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" style="opacity: 0.8;"></div>
+        </div>
+    </div>
+</template>

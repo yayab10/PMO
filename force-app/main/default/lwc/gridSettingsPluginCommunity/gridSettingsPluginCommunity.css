@@ -1,0 +1,17 @@
+.sticky-header {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
+}
+.total-row {
+    position: sticky;
+    top: 28px;
+    z-index: 2;
+}
+.panel-footer-color {
+    background-color: var(--lwc-colorBackground);
+}
+
+.limited-cell {
+    width: 1px;
+}
